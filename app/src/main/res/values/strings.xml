@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Movie App</string>
+    <string name="ratingbar_details">This is the rating of movie</string>
+    <string name="default_web_client_id">767351374433-humo6dd9a8dem5nplgmo3ltqt8uoidns.apps.googleusercontent.com</string>
+</resources>
