@@ -24,9 +24,18 @@ public class MovieModel implements Parcelable {
     @Expose
     private String movie_overview;
 
+    public MovieModel() {
+
+    }
+
+
+    // Setter
+    public void setTitle(String title) {
+        this.title = title;
+    }
     private int runtime;
 
-    protected MovieModel(Parcel in) {
+    public MovieModel(Parcel in) {
         title = in.readString();
         poster_path = in.readString();
         backdrop_path = in.readString();

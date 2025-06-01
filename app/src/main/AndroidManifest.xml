@@ -19,13 +19,8 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
 
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true">
 
-        </activity>
 
-        <!-- LoginActivity - Không còn là LAUNCHER nữa -->
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true">
@@ -35,11 +30,19 @@
             </intent-filter>
         </activity>
 
-        <!-- MovieDetailActivity - Chỉ có thể gọi từ bên trong ứng dụng -->
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true" />
+
+
+       <!-- MovieDetailActivity - Chỉ có thể gọi từ bên trong ứng dụng -->
         <activity
             android:name=".activity.MovieDetailActivity"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".activity.SearchResultsActivity"
+            android:exported="false" />
         <activity android:name=".activity.RegisterActivity" />
     </application>
 

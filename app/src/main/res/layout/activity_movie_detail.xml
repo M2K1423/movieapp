@@ -14,25 +14,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/movie_backdrop"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scaleType="centerCrop" />
+                android:layout_height="250dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="@drawable/gradient_overlay" />
+                <ImageView
+                    android:id="@+id/movie_backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:scaleType="centerCrop" />
 
-            <ImageButton
-                android:id="@+id/play_trailer_button"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_gravity="center"
-                android:background="@drawable/circular_button_background"
-                android:src="@android:drawable/ic_media_play"
-                android:tint="@android:color/white" />
+                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                    android:id="@+id/youtube_player_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="@drawable/gradient_overlay" />
+
+                <ImageButton
+                    android:id="@+id/play_trailer_button"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/circular_button_background"
+                    android:src="@android:drawable/ic_media_play"
+                    android:tint="@android:color/white" />
+
+            </FrameLayout>
+
 
         </FrameLayout>
 

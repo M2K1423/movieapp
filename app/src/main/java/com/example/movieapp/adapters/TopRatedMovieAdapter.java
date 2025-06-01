@@ -1,4 +1,4 @@
-package com.example.movieapp.adaptors;
+package com.example.movieapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +19,11 @@ import com.example.movieapp.models.MovieModel;
 
 import java.util.List;
 
-public class TrendingMovieAdapter extends RecyclerView.Adapter<TrendingMovieAdapter.MovieViewHolder> {
+public class TopRatedMovieAdapter extends RecyclerView.Adapter<TopRatedMovieAdapter.MovieViewHolder> {
     private Context context;
     private List<MovieModel> modelList;
 
-    public TrendingMovieAdapter(Context context) {
+    public TopRatedMovieAdapter(Context context) {
         this.context = context;
     }
 

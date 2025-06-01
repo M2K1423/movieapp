@@ -21,13 +21,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movieapp.R;
 import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.Utils.MovieApi;
-import com.example.movieapp.adaptors.MovieRecyclerAdaptor;
-import com.example.movieapp.adaptors.OnMovieListener;
-import com.example.movieapp.adaptors.PopularMovieAdaptor;
-import com.example.movieapp.adaptors.UpcomingMovieAdapter;
-import com.example.movieapp.adaptors.TrendingMovieAdapter;
-import com.example.movieapp.adaptors.TopRatedMovieAdapter;
-import com.example.movieapp.adaptors.FavouritesMovieAdapter;
+import com.example.movieapp.adapters.MovieRecyclerAdaptor;
+import com.example.movieapp.adapters.OnMovieListener;
+import com.example.movieapp.adapters.PopularMovieAdaptor;
+import com.example.movieapp.adapters.UpcomingMovieAdapter;
+import com.example.movieapp.adapters.TrendingMovieAdapter;
+import com.example.movieapp.adapters.TopRatedMovieAdapter;
+import com.example.movieapp.adapters.FavouritesMovieAdapter;
 import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.request.Servicey;
 import com.example.movieapp.response.MovieSearchResponse;
@@ -89,16 +89,29 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
 
         // Setup search
         setupSearchView();
+        viewModel.getMovies().observe(this, movieModels -> {
+            Log.d("SEARCH_RESULT", "List nhận về: " + (movieModels == null ? "null" : movieModels.size()+" items"));
+            if (movieModels != null) {
+                for (MovieModel m : movieModels) {
+                    Log.d("SEARCH_RESULT", "Phim: " + m.getTitle());
+                }
+            }
+            adaptor.setModelList(movieModels);
+        });
 
         // Observe data changes
         observeAnyChange();
+        viewModel.getMovies().observe(this, movieModels -> {
+            // Khi có dữ liệu search, cập nhật lên adaptor
+            adaptor.setModelList(movieModels);
+        });
     }
 
     private void setupRecyclerViews() {
-        // Setup Search Results RecyclerView
-        adaptor = new MovieRecyclerAdaptor(this);
+        adaptor = new MovieRecyclerAdaptor(this); // this implements OnMovieListener
         recyclerView.setAdapter(adaptor);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setVisibility(View.GONE); // Ẩn ban đầu, chỉ hiện khi search
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -147,28 +160,29 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
     private void setupSearchView() {
         final SearchView searchView = findViewById(R.id.search_View);
 
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainScreenLL.setVisibility(View.GONE);
-                recyclerLL.setVisibility(View.VISIBLE);
-            }
+        searchView.setOnSearchClickListener(v -> {
+            mainScreenLL.setVisibility(View.GONE);
+            recyclerLL.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            adaptor.setModelList(new ArrayList<>()); // clear dữ liệu cũ nếu cần
         });
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                mainScreenLL.setVisibility(View.VISIBLE);
-                recyclerLL.setVisibility(View.GONE);
-                return false;
-            }
+        searchView.setOnCloseListener(() -> {
+            mainScreenLL.setVisibility(View.VISIBLE);
+            recyclerLL.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+            return false;
         });
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                viewModel.searchMovieApi(query, 1);
-                return false;
+                if (!query.trim().isEmpty()) {
+                    Intent intent = new Intent(MainActivity.this, SearchResultsActivity.class);
+                    intent.putExtra("query", query.trim());
+                    startActivity(intent);
+                    searchView.clearFocus();
+                }
+                return true;
             }
 
             @Override
@@ -176,7 +190,10 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
                 return false;
             }
         });
+
+
     }
+
 
     private void getRetrofitResponseToId() {
         MovieApi movieApi = Servicey.getMovieApi();

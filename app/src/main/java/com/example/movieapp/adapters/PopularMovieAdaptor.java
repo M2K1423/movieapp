@@ -1,7 +1,8 @@
-package com.example.movieapp.adaptors;
+package com.example.movieapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,11 @@ import com.example.movieapp.models.MovieModel;
 
 import java.util.List;
 
-public class TopRatedMovieAdapter extends RecyclerView.Adapter<TopRatedMovieAdapter.MovieViewHolder> {
+public class PopularMovieAdaptor extends RecyclerView.Adapter<PopularMovieAdaptor.MovieViewHolder> {
     private Context context;
     private List<MovieModel> modelList;
 
-    public TopRatedMovieAdapter(Context context) {
+    public PopularMovieAdaptor(Context context) {
         this.context = context;
     }
 
@@ -67,6 +68,7 @@ public class TopRatedMovieAdapter extends RecyclerView.Adapter<TopRatedMovieAdap
     }
 
     public void setModelList(List<MovieModel> modelList) {
+        Log.d("PopularMovies", "Setting model list in adapter, size: " + (modelList != null ? modelList.size() : 0));
         this.modelList = modelList;
         notifyDataSetChanged();
     }
@@ -82,4 +84,4 @@ public class TopRatedMovieAdapter extends RecyclerView.Adapter<TopRatedMovieAdap
             rating = itemView.findViewById(R.id.rating);
         }
     }
-} 
+}

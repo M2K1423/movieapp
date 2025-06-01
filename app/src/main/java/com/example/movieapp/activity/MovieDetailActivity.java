@@ -43,7 +43,7 @@ import retrofit2.Response;
 public class MovieDetailActivity extends AppCompatActivity implements ReviewAdapter.OnReviewInteractionListener {
 
     private static final String TAG = "MovieDetailActivity";
-    
+
     private ImageView movieBackdrop;
     private TextView movieTitle;
     private TextView movieOverview;
@@ -57,7 +57,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     private String trailerUrl;
     private ExoPlayer player;
 
-    // New views for reviews
+    // Review views
     private RatingBar userRatingBar;
     private EditText commentInput;
     private Button submitReviewButton;
@@ -70,20 +70,24 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        // Initialize existing views
+        // Khởi tạo views
         initializeExistingViews();
-        
-        // Initialize review views
         initializeReviewViews();
 
-        // Get movie data from intent
+        // Khởi tạo ExoPlayer và gán cho PlayerView
+        player = new ExoPlayer.Builder(this).build();
+        playerView.setPlayer(player);
+
+        // Lấy movie từ Intent
         movie = getIntent().getParcelableExtra("movie");
         if (movie != null) {
             displayMovieDetails();
-            // Initially hide the play button until we confirm there's a trailer
-            playTrailerButton.setVisibility(View.GONE);
-            checkForTrailer();
-            loadReviews(); // Load existing reviews
+
+            playTrailerButton.setVisibility(View.GONE); // Ẩn nút play trailer lúc đầu
+
+            checkForTrailer(); // Tìm trailer và hiện nút nếu có
+
+            loadReviews(); // Load review mẫu hoặc API
         } else {
             Toast.makeText(this, "Error loading movie details", Toast.LENGTH_SHORT).show();
             finish();
@@ -110,15 +114,13 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         submitReviewButton = findViewById(R.id.submit_review_button);
         reviewsRecyclerView = findViewById(R.id.reviews_recycler_view);
 
-        // Setup RecyclerView
+        reviews = new ArrayList<>();
         reviewAdapter = new ReviewAdapter(this);
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         reviewsRecyclerView.setAdapter(reviewAdapter);
-        reviews = new ArrayList<>();
     }
 
     private void setupClickListeners() {
-        // Existing click listeners
         playTrailerButton.setOnClickListener(v -> {
             if (trailerUrl != null && !trailerUrl.isEmpty()) {
                 showVideoPlayer();
@@ -129,7 +131,6 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
 
         closePlayerButton.setOnClickListener(v -> hideVideoPlayer());
 
-        // New review submission click listener
         submitReviewButton.setOnClickListener(v -> submitReview());
     }
 
@@ -141,107 +142,58 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
             Toast.makeText(this, "Please provide a rating", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (comment.isEmpty()) {
             Toast.makeText(this, "Please write a review", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create a new review
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                .format(new Date());
-        Review newReview = new Review(
-                UUID.randomUUID().toString(),
-                "User", // In a real app, get the actual username
-                comment,
-                currentDate,
-                rating
-        );
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
+        Review newReview = new Review(UUID.randomUUID().toString(), "User", comment, currentDate, rating);
 
-        // Add to the list and update UI
         reviewAdapter.addReview(newReview);
         reviewsRecyclerView.smoothScrollToPosition(0);
 
-        // Clear input fields
         userRatingBar.setRating(0);
         commentInput.setText("");
-
-        // Hide keyboard
         commentInput.clearFocus();
 
         Toast.makeText(this, "Review submitted successfully", Toast.LENGTH_SHORT).show();
     }
 
     private void loadReviews() {
-        // In a real app, load reviews from an API or local database
-        // For now, we'll add some dummy reviews
+        // Thêm review mẫu, thay bằng gọi API khi có backend
         List<Review> dummyReviews = new ArrayList<>();
-        dummyReviews.add(new Review(
-                "1",
-                "John Doe",
-                "Great movie! The special effects were amazing.",
-                "2024-03-20 14:30",
-                4.5f
-        ));
-        dummyReviews.add(new Review(
-                "2",
-                "Jane Smith",
-                "Interesting plot but the ending could have been better.",
-                "2024-03-19 09:15",
-                3.5f
-        ));
-
+        dummyReviews.add(new Review("1", "John Doe", "Great movie!", "2024-03-20 14:30", 4.5f));
+        dummyReviews.add(new Review("2", "Jane Smith", "Interesting plot.", "2024-03-19 09:15", 3.5f));
         reviewAdapter.setReviews(dummyReviews);
-    }
-
-    @Override
-    public void onLikeClicked(Review review, int position) {
-        review.toggleLike();
-        reviewAdapter.notifyItemChanged(position);
-    }
-
-    @Override
-    public void onReplyClicked(Review review, int position) {
-        // In a real app, open a reply dialog or activity
-        Toast.makeText(this, "Reply feature coming soon!", Toast.LENGTH_SHORT).show();
     }
 
     private void displayMovieDetails() {
         Log.d(TAG, "Displaying details for movie: " + movie.getTitle());
-        
-        // Load backdrop image
+
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.isEmpty()) {
-            Log.d(TAG, "Loading backdrop image from path: " + backdropPath);
             Glide.with(this)
                     .load(Credentials.IMAGE_URL + backdropPath)
                     .placeholder(R.drawable.movie_placeholder)
                     .error(R.drawable.movie_placeholder)
                     .into(movieBackdrop);
         } else {
-            Log.d(TAG, "No backdrop image available, using placeholder");
-            Glide.with(this)
-                    .load(R.drawable.movie_placeholder)
-                    .into(movieBackdrop);
+            Glide.with(this).load(R.drawable.movie_placeholder).into(movieBackdrop);
         }
 
-        // Set text data
         movieTitle.setText(movie.getTitle());
         movieOverview.setText(movie.getOverview());
         movieReleaseDate.setText(movie.getRelease_date());
-        movieRating.setRating(movie.getVote_average() / 2);
+        movieRating.setRating(movie.getVote_average() / 2f);
     }
 
     private void checkForTrailer() {
         int movieId = movie.getId();
         Log.d(TAG, "Checking for trailer availability for movie ID: " + movieId);
-        
+
         MovieApi movieApi = Servicey.getMovieApi();
-        Call<MovieVideoResponse> responseCall = movieApi.getMovieVideos(
-            movieId, 
-            Credentials.API_KEY,
-            "en-US"
-        );
+        Call<MovieVideoResponse> responseCall = movieApi.getMovieVideos(movieId, Credentials.API_KEY, "en-US");
 
         responseCall.enqueue(new Callback<MovieVideoResponse>() {
             @Override
@@ -259,12 +211,12 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
 
                 List<MovieVideo> videos = response.body().getVideos();
                 Log.d(TAG, "Number of videos received: " + videos.size());
-                
+
                 for (MovieVideo video : videos) {
                     if ("Trailer".equalsIgnoreCase(video.getType())) {
                         String videoKey = video.getKey();
-                        // Convert YouTube key to direct video URL
-                        trailerUrl = "https://www.youtube.com/watch?v=" + videoKey;
+                        trailerUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+                        // Hoặc trailerUrl = "https://www.youtube.com/watch?v=" + videoKey; -> Ko chơi trực tiếp với ExoPlayer
                         playTrailerButton.setVisibility(View.VISIBLE);
                         return;
                     }
@@ -277,9 +229,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
             @Override
             public void onFailure(Call<MovieVideoResponse> call, Throwable t) {
                 Log.e(TAG, "Network error when checking for trailer", t);
-                Toast.makeText(MovieDetailActivity.this, 
-                    "Network error: " + t.getMessage(), 
-                    Toast.LENGTH_SHORT).show();
+                Toast.makeText(MovieDetailActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -288,6 +238,9 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         movieBackdrop.setVisibility(View.GONE);
         playTrailerButton.setVisibility(View.GONE);
         videoPlayerContainer.setVisibility(View.VISIBLE);
+
+        player.stop();
+        player.clearMediaItems();
 
         MediaItem mediaItem = MediaItem.fromUri(trailerUrl);
         player.setMediaItem(mediaItem);
@@ -305,16 +258,23 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (player != null) {
-            player.release();
-        }
+        if (player != null) player.release();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (player != null) {
-            player.pause();
-        }
+        if (player != null) player.pause();
+    }
+
+    @Override
+    public void onLikeClicked(Review review, int position) {
+        review.toggleLike();
+        reviewAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onReplyClicked(Review review, int position) {
+        Toast.makeText(this, "Reply feature coming soon!", Toast.LENGTH_SHORT).show();
     }
 }

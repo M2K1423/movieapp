@@ -50,8 +50,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Check if user is already signed in
         mAuth = FirebaseAuth.getInstance();
+
+        // Buộc đăng xuất user khi mở login để không tự động đăng nhập
+        mAuth.signOut();
+
+        // Sau khi signOut, getCurrentUser() chắc chắn null
         if (mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();

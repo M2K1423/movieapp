@@ -1,4 +1,4 @@
-package com.example.movieapp.adaptors;
+package com.example.movieapp.adapters;
 
 public interface OnMovieListener {
 
