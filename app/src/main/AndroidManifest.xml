@@ -44,6 +44,8 @@
             android:name=".activity.SearchResultsActivity"
             android:exported="false" />
         <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.ProfileActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

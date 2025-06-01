@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,6 +105,10 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         viewModel.getMovies().observe(this, movieModels -> {
             // Khi có dữ liệu search, cập nhật lên adaptor
             adaptor.setModelList(movieModels);
+        });
+        ImageButton profileBtn = findViewById(R.id.btn_profile);
+        profileBtn.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         });
     }
 

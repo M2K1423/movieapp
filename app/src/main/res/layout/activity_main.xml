@@ -22,15 +22,35 @@
             android:elevation="0dp"
             app:contentInsetStartWithNavigation="0dp">
 
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/search_View"
+            <!-- SearchView và nút profile -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="8dp"
-                style="@style/CustomSearchView"
-                android:theme="@style/CustomSearchView"
-                app:iconifiedByDefault="false"
-                app:queryHint="Search movies..." />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/search_View"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:layout_margin="8dp"
+                    style="@style/CustomSearchView"
+                    android:theme="@style/CustomSearchView"
+                    app:iconifiedByDefault="false"
+                    app:queryHint="Search movies..." />
+
+                <ImageButton
+                    android:id="@+id/btn_profile"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_profile_placeholder"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Profile"
+                    android:tint="@android:color/white"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp" />
+
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
