@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -74,6 +77,13 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         initializeExistingViews();
         initializeReviewViews();
 
+        // ⚠️ Thêm đoạn xử lý màu RatingBar ở đây
+        RatingBar ratingBar = findViewById(R.id.user_rating_bar);
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_ATOP); // đã chọn
+        stars.getDrawable(1).setColorFilter(Color.parseColor("#FFCC80"), PorterDuff.Mode.SRC_ATOP); // nửa
+        stars.getDrawable(0).setColorFilter(Color.parseColor("#EEEEEE"), PorterDuff.Mode.SRC_ATOP); // chưa chọn
+
         // Khởi tạo ExoPlayer và gán cho PlayerView
         player = new ExoPlayer.Builder(this).build();
         playerView.setPlayer(player);
@@ -84,9 +94,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
             displayMovieDetails();
 
             playTrailerButton.setVisibility(View.GONE); // Ẩn nút play trailer lúc đầu
-
             checkForTrailer(); // Tìm trailer và hiện nút nếu có
-
             loadReviews(); // Load review mẫu hoặc API
         } else {
             Toast.makeText(this, "Error loading movie details", Toast.LENGTH_SHORT).show();
@@ -95,6 +103,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
 
         setupClickListeners();
     }
+
 
     private void initializeExistingViews() {
         movieBackdrop = findViewById(R.id.movie_backdrop);
