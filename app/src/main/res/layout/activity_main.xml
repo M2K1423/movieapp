@@ -104,6 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
+                    android:maxHeight="300dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:visibility="visible" />
@@ -123,6 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
+                    android:maxHeight="300dp"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp" />
 
