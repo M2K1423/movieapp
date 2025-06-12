@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.movieapp.AppExecutors;
 import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.models.MovieModel;
+import com.example.movieapp.response.MovieListResponse;
 import com.example.movieapp.response.MovieSearchResponse;
 
 import java.io.IOException;
@@ -125,7 +126,7 @@ public class MovieApiClient {
         }
 
         retrieveMoviesRunnableUpcoming = new RetrieveMoviesRunnableUpcoming(pageNumber);
-
+//
         final Future<?> future = AppExecutors.getInstance().networkIO().submit(retrieveMoviesRunnableUpcoming);
 
         AppExecutors.getInstance().networkIO().schedule(() -> {
@@ -204,7 +205,6 @@ public class MovieApiClient {
 
         private Call<MovieSearchResponse> getMovies(String query, int pageNumber){
             return Servicey.getMovieApi().searchMovies(
-                    Credentials.API_KEY,
                     query,
                     String.valueOf(pageNumber)
             );
@@ -228,6 +228,9 @@ public class MovieApiClient {
         @Override
         public void run() {
             try {
+                Call<MovieSearchResponse> call = getPopularMovies(pageNumber);
+                Log.d("RetrofitURL", "Request URL: " + call.request().url());
+
                 Log.d("PopularMovies", "Making API request for popular movies");
                 Response<MovieSearchResponse> response = getPopularMovies(pageNumber).execute();
                 if (cancelRequest) {
@@ -237,7 +240,6 @@ public class MovieApiClient {
 
                 if (response.code() == 200 && response.body() != null) {
                     List<MovieModel> list = new ArrayList<>(response.body().getMovieModelList());
-                    Log.d("PopularMovies", "Received " + list.size() + " popular movies");
                     if (pageNumber == 1) {
                         mMoviesPopular.postValue(list);
                     } else {
@@ -261,7 +263,6 @@ public class MovieApiClient {
 
         private Call<MovieSearchResponse> getPopularMovies(int pageNumber){
             return Servicey.getMovieApi().getPopularMovies(
-                    Credentials.API_KEY,
                     String.valueOf(pageNumber)
             );
         }
@@ -284,9 +285,9 @@ public class MovieApiClient {
         @Override
         public void run() {
             try {
-                Response<MovieSearchResponse> response = getUpcomingMovies(pageNumber).execute();
-                if (cancelRequest) return;
-
+                Response<MovieListResponse> response = getUpcomingMovies(pageNumber).execute();
+//                if (cancelRequest) return;
+                Log.e("upcoming",response.body().toString());
                 if (response.code() == 200 && response.body() != null) {
                     List<MovieModel> list = new ArrayList<>(response.body().getMovieModelList());
                     if (pageNumber == 1) {
@@ -298,20 +299,20 @@ public class MovieApiClient {
                             mMoviesUpcoming.postValue(current);
                         }
                     }
-                } else {
+                }
+                else {
                     String error = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                    Log.v("Tag", "Error: " + error);
+                    Log.v("upcoming", "Error: " + error);
                     mMoviesUpcoming.postValue(null);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("upcoming",e.getMessage());
                 mMoviesUpcoming.postValue(null);
             }
         }
 
-        private Call<MovieSearchResponse> getUpcomingMovies(int pageNumber) {
+        private Call<MovieListResponse> getUpcomingMovies(int pageNumber) {
             return Servicey.getMovieApi().getUpcomingMovies(
-                    Credentials.API_KEY,
                     String.valueOf(pageNumber)
             );
         }
@@ -334,7 +335,7 @@ public class MovieApiClient {
         @Override
         public void run() {
             try {
-                Response<MovieSearchResponse> response = getTopRatedMovies(pageNumber).execute();
+                Response<MovieListResponse> response = getTopRatedMovies(pageNumber).execute();
                 if (cancelRequest) return;
 
                 if (response.code() == 200 && response.body() != null) {
@@ -359,7 +360,7 @@ public class MovieApiClient {
             }
         }
 
-        private Call<MovieSearchResponse> getTopRatedMovies(int pageNumber) {
+        private Call<MovieListResponse> getTopRatedMovies(int pageNumber) {
             return Servicey.getMovieApi().getTopRatedMovies(
                     Credentials.API_KEY,
                     String.valueOf(pageNumber)
@@ -384,7 +385,7 @@ public class MovieApiClient {
         @Override
         public void run() {
             try {
-                Response<MovieSearchResponse> response = getTrendingMovies(pageNumber).execute();
+                Response<MovieListResponse> response = getTrendingMovies(pageNumber).execute();
                 if (cancelRequest) return;
 
                 if (response.code() == 200 && response.body() != null) {
@@ -409,9 +410,8 @@ public class MovieApiClient {
             }
         }
 
-        private Call<MovieSearchResponse> getTrendingMovies(int pageNumber) {
+        private Call<MovieListResponse> getTrendingMovies(int pageNumber) {
             return Servicey.getMovieApi().getTrendingMovies(
-                    Credentials.API_KEY,
                     String.valueOf(pageNumber)
             );
         }

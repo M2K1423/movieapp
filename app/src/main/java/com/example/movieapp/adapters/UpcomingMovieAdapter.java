@@ -36,13 +36,17 @@ public class UpcomingMovieAdapter extends RecyclerView.Adapter<UpcomingMovieAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        MovieModel movieModel = list.get(position);
+        MovieModel model = list.get(position);
 
-        holder.titleTextView.setText(movieModel.getTitle());
-        holder.releaseDateTextView.setText(movieModel.getRelease_date());
+        holder.titleTextView.setText(model.getTitle());
+//        holder.releaseDateTextView.setText(model.getYear());
+//        float rating = model.getRatings().getVote_average() / 2;
+//        holder.rating.setText(String.format("%.1f", rating));
+//
 
-        Glide.with(holder.itemView.getContext())
-                .load("https://image.tmdb.org/t/p/w500/" + movieModel.getPoster_path())
+
+        Glide.with(context)
+                .load("http://phimimg.com/" + model.getPosterPath())
                 .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {
@@ -51,7 +55,14 @@ public class UpcomingMovieAdapter extends RecyclerView.Adapter<UpcomingMovieAdap
             }
         });
     }
-
+    public String converCountRating(int countRating){
+        String res = "";
+        if(countRating > 1000){
+            int thousandths =  countRating / 1000;
+            res += thousandths + "." + (countRating % 1000) / 100 + "k";
+        }
+        return res;
+    }
     @Override
     public int getItemCount() {
         if (list != null)
@@ -68,12 +79,16 @@ public class UpcomingMovieAdapter extends RecyclerView.Adapter<UpcomingMovieAdap
         private ImageView imageView;
         private TextView titleTextView;
         private TextView releaseDateTextView;
+        TextView  rating,ratingCount ;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.movieImage_Upcoming_item);
             titleTextView = itemView.findViewById(R.id.movieTitle_Upcoming);
             releaseDateTextView = itemView.findViewById(R.id.releaseDate_Upcoming);
+            rating = itemView.findViewById(R.id.rating);
+            ratingCount = itemView.findViewById(R.id.rating_count);
         }
     }
 } 

@@ -1,6 +1,7 @@
 package com.example.movieapp.Utils;
 
 import com.example.movieapp.models.MovieModel;
+import com.example.movieapp.response.MovieListResponse;
 import com.example.movieapp.response.MovieSearchResponse;
 import com.example.movieapp.response.MovieVideoResponse;
 
@@ -11,39 +12,33 @@ import retrofit2.http.Query;
 
 public interface MovieApi {
 
-    @GET("/3/search/movie")
+    @GET("/v1/api/tim-kiem")
     Call<MovieSearchResponse> searchMovies(
-            @Query("api_key") String key,
             @Query("query") String query,
             @Query("page") String page
     );
 
-    @GET("/3/movie/popular")
+    @GET("/danh-sach/phim-moi-cap-nhat")
     Call<MovieSearchResponse> getPopularMovies(
-            @Query("api_key") String key,
             @Query("page") String page
     );
 
-    @GET("/3/movie/upcoming")
-    Call<MovieSearchResponse> getUpcomingMovies(
-            @Query("api_key") String key,
+    @GET("/v1/api/danh-sach/phim-le")
+    Call<MovieListResponse> getUpcomingMovies(
+
             @Query("page") String page
     );
 
-    @GET("/3/movie/{movie_id}")
-    Call<MovieModel> getMovie(
-            @Path("movie_id") int movieId,
-            @Query("api_key") String key
-    );
+    @GET("/phim/{slug}")
+    Call<MovieVideoResponse> getMovie(@Path("slug") String slug);
 
-    @GET("/3/trending/movie/day")
-    Call<MovieSearchResponse> getTrendingMovies(
-            @Query("api_key") String key,
+    @GET("/v1/api/danh-sach/hoat-hinh")
+    Call<MovieListResponse> getTrendingMovies(
             @Query("page") String page
     );
 
-    @GET("/3/movie/top_rated")
-    Call<MovieSearchResponse> getTopRatedMovies(
+    @GET("/v1/api/danh-sach/tv-shows")
+    Call<MovieListResponse> getTopRatedMovies(
             @Query("api_key") String key,
             @Query("page") String page
     );

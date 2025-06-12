@@ -32,13 +32,13 @@ public class Servicey {
 
                     Request request = requestBuilder.build();
                     Response response = chain.proceed(request);
-                    
+
                     if (!response.isSuccessful()) {
-                        Log.e(TAG, "API Error - Code: " + response.code() + 
-                              ", URL: " + request.url() + 
-                              ", Response: " + response.body().string());
+                        Log.e(TAG, "API Error - Code: " + response.code() +
+                                ", URL: " + request.url() +
+                                ", Response: " + response.body().string());
                     }
-                    
+
                     return response;
                 })
                 .build();
@@ -55,6 +55,7 @@ public class Servicey {
     private static MovieApi movieApi = retrofit.create(MovieApi.class);
 
     public static MovieApi getMovieApi() {
+        System.out.println("moview api" + movieApi);
         return movieApi;
     }
 }

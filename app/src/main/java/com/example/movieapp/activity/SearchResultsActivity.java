@@ -54,7 +54,6 @@ public class SearchResultsActivity extends AppCompatActivity implements OnMovieL
     private void searchMoviesFromApi(String query) {
         MovieApi movieApi = Servicey.getMovieApi();
         Call<MovieSearchResponse> call = movieApi.searchMovies(
-                Credentials.API_KEY,
                 query,
                 "1" // page = 1
         );

@@ -42,13 +42,13 @@ public class FavouritesMovieAdapter extends RecyclerView.Adapter<FavouritesMovie
         holder.title.setText(model.getTitle());
         
         // Set movie rating
-        float rating = model.getVote_average() / 2;
-        holder.rating.setText(String.format("%.1f", rating));
+//        float rating = model.getVote_average() / 2;
+//        holder.rating.setText(String.format("%.1f", rating));
 
         // Load movie poster using Glide
-        Glide.with(context)
-                .load(Credentials.IMAGE_URL + model.getPoster_path())
-                .into(holder.imageView);
+//        Glide.with(context)
+//                .load(Credentials.IMAGE_URL + model.getPoster_path())
+//                .into(holder.imageView);
 
         // Set click listener for movie details
         holder.itemView.setOnClickListener(v -> {

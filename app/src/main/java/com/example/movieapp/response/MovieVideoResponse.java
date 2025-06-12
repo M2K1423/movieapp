@@ -7,15 +7,15 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class MovieVideoResponse {
-    @SerializedName("results")
+    @SerializedName("movie")
     @Expose
-    private List<MovieVideo> videos;
+    private MovieVideo video;
 
-    public List<MovieVideo> getVideos() {
-        return videos;
+    public MovieVideo getVideo() {
+        return video;
     }
 
-    public void setVideos(List<MovieVideo> videos) {
-        this.videos = videos;
+    public void setVideo(MovieVideo video) {
+        this.video = video;
     }
-} 
+}

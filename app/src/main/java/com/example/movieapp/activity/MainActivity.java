@@ -32,6 +32,7 @@ import com.example.movieapp.adapters.FavouritesMovieAdapter;
 import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.request.Servicey;
 import com.example.movieapp.response.MovieSearchResponse;
+import com.example.movieapp.response.MovieVideoResponse;
 import com.example.movieapp.viewmodel.MovieListViewModel;
 
 import java.io.IOException;
@@ -81,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         viewModel = new ViewModelProvider(this).get(MovieListViewModel.class);
 
         // Setup all RecyclerViews
-        setupRecyclerViews();
-        setupTrendingMovies();
+//        setupRecyclerViews();
         setupPopularMovies();
-        setupTopRatedMovies();
+        setupTrendingMovies();
         setupUpcomingMovies();
-        setupFavouritesMovies();
+        setupTopRatedMovies();
+//        setupFavouritesMovies();
 
         // Setup search
         setupSearchView();
@@ -94,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
             Log.d("SEARCH_RESULT", "List nhận về: " + (movieModels == null ? "null" : movieModels.size()+" items"));
             if (movieModels != null) {
                 for (MovieModel m : movieModels) {
-                    Log.d("SEARCH_RESULT", "Phim: " + m.getTitle());
                 }
             }
             adaptor.setModelList(movieModels);
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
     private void loadMovies() {
         // Load popular movies
         viewModel.searchPopularMovieApi(1);
+
         viewModel.getPopularMoviesList().observe(this, new Observer<List<MovieModel>>() {
             @Override
             public void onChanged(List<MovieModel> movieModels) {
@@ -203,39 +204,37 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
     private void getRetrofitResponseToId() {
         MovieApi movieApi = Servicey.getMovieApi();
 
-        Call<MovieModel> responseCall = movieApi.getMovie(500, Credentials.API_KEY);
+        Call<MovieVideoResponse> responseCall = movieApi.getMovie("500");
 
-        responseCall.enqueue(new Callback<MovieModel>() {
-            @Override
-            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
-                if (response.code() == 200) {
-                    Toast.makeText(MainActivity.this, "Success by ID", Toast.LENGTH_SHORT).show();
-
-                    MovieModel movie = response.body();
-                    assert movie != null;
-                    Log.d("TAG", "Movie Name " + movie.getTitle());
-                } else {
-                    try {
-                        Toast.makeText(MainActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
-                        assert response.errorBody() != null;
-                        Log.d("TAG", "onResponse: " + response.errorBody().string());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieModel> call, Throwable t) {
-            }
-        });
+//        responseCall.enqueue(new Callback<MovieModel>() {
+//            @Override
+//            public void onResponse(Call<MovieModel> call, Response<MovieModel> response) {
+//                if (response.code() == 200) {
+//                    Toast.makeText(MainActivity.this, "Success by ID", Toast.LENGTH_SHORT).show();
+//
+//                    MovieModel movie = response.body();
+//                    assert movie != null;
+//                } else {
+//                    try {
+//                        Toast.makeText(MainActivity.this, "Something went Wrong", Toast.LENGTH_SHORT).show();
+//                        assert response.errorBody() != null;
+//                        Log.d("TAG", "onResponse: " + response.errorBody().string());
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MovieModel> call, Throwable t) {
+//            }
+//        });
     }
 
     private void getRetrofitResponse() {
         MovieApi movieApi = Servicey.getMovieApi();
 
         Call<MovieSearchResponse> responseCall = movieApi.searchMovies(
-                Credentials.API_KEY,
                 "Action",
                 "1"
         );
@@ -298,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         trendingRecyclerView.setAdapter(trendingMovieAdapter);
         trendingRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
+
         // Getting trending movies
         viewModel.searchTrendingMovies(1);
     }
@@ -327,12 +327,6 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
 
     private void observeAnyChange() {
         // Observing trending movies
-        viewModel.getTrendingMovies().observe(this, movieModels -> {
-            if (movieModels != null) {
-                Log.d("Movies", "Trending movies loaded: " + movieModels.size());
-                trendingMovieAdapter.setModelList(movieModels);
-            }
-        });
 
         // Observing popular movies
         viewModel.getPopularMoviesList().observe(this, movieModels -> {
@@ -343,19 +337,25 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
                 Log.e("Movies", "Popular movies response was null");
             }
         });
-
-        // Observing top rated movies
-        viewModel.getTopRatedMovies().observe(this, movieModels -> {
+        viewModel.getTrendingMovies().observe(this, movieModels -> {
             if (movieModels != null) {
-                Log.d("Movies", "Top rated movies loaded: " + movieModels.size());
-                topRatedMovieAdapter.setModelList(movieModels);
+                Log.d("Movies", "Trending movies loaded: " + movieModels.size());
+                trendingMovieAdapter.setModelList(movieModels);
             }
         });
+
+        // Observing top rated movies
 
         // Observing upcoming movies
         viewModel.getUpcomingMovies().observe(this, movieModels -> {
             if (movieModels != null) {
                 upcomingAdapter.setMovieList(movieModels);
+            }
+        });
+        viewModel.getTopRatedMovies().observe(this, movieModels -> {
+            if (movieModels != null) {
+                Log.d("Movies", "Top rated movies loaded: " + movieModels.size());
+                topRatedMovieAdapter.setModelList(movieModels);
             }
         });
 

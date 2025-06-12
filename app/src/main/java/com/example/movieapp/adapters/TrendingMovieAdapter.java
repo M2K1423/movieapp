@@ -37,17 +37,22 @@ public class TrendingMovieAdapter extends RecyclerView.Adapter<TrendingMovieAdap
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         MovieModel model = modelList.get(position);
-        
+
         // Set movie title
         holder.title.setText(model.getTitle());
-        
+
         // Set movie rating
-        float rating = model.getVote_average() / 2;
+        float rating = model.getRatings().getVote_average() / 2;
         holder.rating.setText(String.format("%.1f", rating));
+
+        int countRating = model.getRatings().getVote_count();
+        String converRating = converCountRating(countRating);
+
+        holder.ratingCount.setText("("+converRating+" lượt đánh giá)");
 
         // Load movie poster using Glide
         Glide.with(context)
-                .load(Credentials.IMAGE_URL + model.getPoster_path())
+                .load("http://phimimg.com/" + model.getPosterPath())
                 .into(holder.imageView);
 
         // Set click listener for movie details
@@ -57,7 +62,14 @@ public class TrendingMovieAdapter extends RecyclerView.Adapter<TrendingMovieAdap
             context.startActivity(intent);
         });
     }
-
+    public String converCountRating(int countRating){
+        String res = "";
+        if(countRating > 1000){
+            int thousandths =  countRating / 1000;
+            res += thousandths + "." + (countRating % 1000) / 100 + "k";
+        }
+        return res;
+    }
     @Override
     public int getItemCount() {
         if (modelList != null) {
@@ -73,13 +85,15 @@ public class TrendingMovieAdapter extends RecyclerView.Adapter<TrendingMovieAdap
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView title, rating;
+        TextView title, rating,ratingCount ;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.movie_img);
             title = itemView.findViewById(R.id.movie_title);
             rating = itemView.findViewById(R.id.rating);
+            ratingCount = itemView.findViewById(R.id.rating_count);
+
         }
     }
 } 

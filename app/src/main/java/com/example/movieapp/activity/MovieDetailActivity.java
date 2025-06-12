@@ -1,17 +1,25 @@
 package com.example.movieapp.activity;
 
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -48,6 +56,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     private static final String TAG = "MovieDetailActivity";
 
     private ImageView movieBackdrop;
+    private ImageView movieThumbnail;
     private TextView movieTitle;
     private TextView movieOverview;
     private TextView movieReleaseDate;
@@ -57,6 +66,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     private PlayerView playerView;
     private ImageButton closePlayerButton;
     private MovieModel movie;
+    private MovieVideo movieVideo;
     private String trailerUrl;
     private ExoPlayer player;
 
@@ -64,38 +74,42 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     private RatingBar userRatingBar;
     private EditText commentInput;
     private Button submitReviewButton;
+    private FrameLayout youtubeContainer;
+
     private RecyclerView reviewsRecyclerView;
     private ReviewAdapter reviewAdapter;
     private List<Review> reviews;
+
+    YouTubePlayerView youtubePlayerView; // Thêm field này vào class
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        youtubeContainer = findViewById(R.id.youtube_container);
 
         // Khởi tạo views
         initializeExistingViews();
         initializeReviewViews();
 
-        // ⚠️ Thêm đoạn xử lý màu RatingBar ở đây
+        // RatingBar
         RatingBar ratingBar = findViewById(R.id.user_rating_bar);
         LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_ATOP); // đã chọn
-        stars.getDrawable(1).setColorFilter(Color.parseColor("#FFCC80"), PorterDuff.Mode.SRC_ATOP); // nửa
-        stars.getDrawable(0).setColorFilter(Color.parseColor("#EEEEEE"), PorterDuff.Mode.SRC_ATOP); // chưa chọn
+        stars.getDrawable(2).setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(1).setColorFilter(Color.parseColor("#FFCC80"), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(Color.parseColor("#EEEEEE"), PorterDuff.Mode.SRC_ATOP);
 
-        // Khởi tạo ExoPlayer và gán cho PlayerView
-        player = new ExoPlayer.Builder(this).build();
-        playerView.setPlayer(player);
+        // Khởi tạo YouTubePlayerView
+        youtubePlayerView = findViewById(R.id.youtube_player_view);
+        getLifecycle().addObserver(youtubePlayerView); // bắt buộc phải thêm dòng này
 
         // Lấy movie từ Intent
         movie = getIntent().getParcelableExtra("movie");
         if (movie != null) {
             displayMovieDetails();
+            checkForTrailer(); // Gọi để load trailer
 
-            playTrailerButton.setVisibility(View.GONE); // Ẩn nút play trailer lúc đầu
-            checkForTrailer(); // Tìm trailer và hiện nút nếu có
-            loadReviews(); // Load review mẫu hoặc API
+            loadReviews();
         } else {
             Toast.makeText(this, "Error loading movie details", Toast.LENGTH_SHORT).show();
             finish();
@@ -104,7 +118,6 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         setupClickListeners();
     }
 
-
     private void initializeExistingViews() {
         movieBackdrop = findViewById(R.id.movie_backdrop);
         movieTitle = findViewById(R.id.movie_title);
@@ -112,9 +125,8 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         movieReleaseDate = findViewById(R.id.movie_release_date);
         movieRating = findViewById(R.id.movie_rating);
         playTrailerButton = findViewById(R.id.play_trailer_button);
-        videoPlayerContainer = findViewById(R.id.video_player_container);
-        playerView = findViewById(R.id.player_view);
-        closePlayerButton = findViewById(R.id.close_player_button);
+        movieThumbnail = findViewById(R.id.movie_thumbnail);
+//        closePlayerButton = findViewById(R.id.close_player_button);
     }
 
     private void initializeReviewViews() {
@@ -130,17 +142,25 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     }
 
     private void setupClickListeners() {
-        playTrailerButton.setOnClickListener(v -> {
-            if (trailerUrl != null && !trailerUrl.isEmpty()) {
-                showVideoPlayer();
-            } else {
-                Toast.makeText(this, "No trailer available", Toast.LENGTH_SHORT).show();
-            }
-        });
+        playTrailerButton.setOnClickListener(v -> showYouTubePlayer());
+//            // Hiện vùng chứa và player
+//            FrameLayout youtubeContainer = findViewById(R.id.youtube_container);
+//
+//            youtubeContainer.setVisibility(View.VISIBLE);
+//            youtubePlayerView.setVisibility(View.VISIBLE);
+//
+//            // Lấy videoId từ URL trailer
+//            String videoId = Uri.parse(trailerUrl).getQueryParameter("v");
+//            if (videoId != null) {
+//                youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+//                    @Override
+//                    public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+//                        youTubePlayer.loadVideo(videoId, 0);
+//                    }
+//                });
+//            }
+//        });
 
-        closePlayerButton.setOnClickListener(v -> hideVideoPlayer());
-
-        submitReviewButton.setOnClickListener(v -> submitReview());
     }
 
     private void submitReview() {
@@ -180,10 +200,12 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     private void displayMovieDetails() {
         Log.d(TAG, "Displaying details for movie: " + movie.getTitle());
 
-        String backdropPath = movie.getBackdrop_path();
+//        String backdropPath = movie.getBackdropPath();
+        String posterPath = movie.getPosterPath();
+        String backdropPath = movie.getBackdropPath();
         if (backdropPath != null && !backdropPath.isEmpty()) {
             Glide.with(this)
-                    .load(Credentials.IMAGE_URL + backdropPath)
+                    .load(Credentials.IMAGE_URL+ "/" + backdropPath)
                     .placeholder(R.drawable.movie_placeholder)
                     .error(R.drawable.movie_placeholder)
                     .into(movieBackdrop);
@@ -191,70 +213,101 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
             Glide.with(this).load(R.drawable.movie_placeholder).into(movieBackdrop);
         }
 
+        if (posterPath != null && !posterPath.isEmpty()) {
+            Glide.with(this)
+                    .load(Credentials.IMAGE_URL+ "/" + posterPath)
+                    .placeholder(R.drawable.movie_placeholder)
+                    .error(R.drawable.movie_placeholder)
+                    .into(movieThumbnail);
+        } else {
+            Glide.with(this).load(R.drawable.movie_placeholder).into(movieThumbnail);
+        }
         movieTitle.setText(movie.getTitle());
-        movieOverview.setText(movie.getOverview());
-        movieReleaseDate.setText(movie.getRelease_date());
-        movieRating.setRating(movie.getVote_average() / 2f);
+        movieRating.setRating(movie.getRatings().getVote_average() / 2f);
     }
 
+
     private void checkForTrailer() {
-        int movieId = movie.getId();
-        Log.d(TAG, "Checking for trailer availability for movie ID: " + movieId);
+        String slug = movie.getSlug();
 
         MovieApi movieApi = Servicey.getMovieApi();
-        Call<MovieVideoResponse> responseCall = movieApi.getMovieVideos(movieId, Credentials.API_KEY, "en-US");
+        Call<MovieVideoResponse> responseCall = movieApi.getMovie(slug);
 
         responseCall.enqueue(new Callback<MovieVideoResponse>() {
             @Override
             public void onResponse(Call<MovieVideoResponse> call, Response<MovieVideoResponse> response) {
                 if (!response.isSuccessful()) {
-                    Log.e(TAG, "Error checking for trailer: " + response.code());
-                    Toast.makeText(MovieDetailActivity.this, "Failed to load trailer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MovieDetailActivity.this, "Không lấy được trailer", Toast.LENGTH_SHORT).show();
+                    playTrailerButton.setVisibility(View.GONE);
                     return;
                 }
 
-                if (response.body() == null || response.body().getVideos() == null) {
-                    Log.e(TAG, "Response body or videos is null");
-                    return;
+                movieVideo = response.body().getVideo();
+
+                movieReleaseDate.setText("năm xuất bản " + movie.getYear());
+                movieOverview.setText(movieVideo.getContent());
+
+                trailerUrl = response.body().getVideo().getTrailerUrl(); // cập nhật biến toàn cục
+                if (trailerUrl != null && trailerUrl.contains("youtube.com")) {
+                    playTrailerButton.setVisibility(View.VISIBLE); // ✅ hiện nút nếu có trailer
+                    loadTrailer(trailerUrl);
+                } else {
+                    playTrailerButton.setVisibility(View.GONE);
+                    Toast.makeText(MovieDetailActivity.this, "Không có trailer", Toast.LENGTH_SHORT).show();
                 }
-
-                List<MovieVideo> videos = response.body().getVideos();
-                Log.d(TAG, "Number of videos received: " + videos.size());
-
-                for (MovieVideo video : videos) {
-                    if ("Trailer".equalsIgnoreCase(video.getType())) {
-                        String videoKey = video.getKey();
-                        trailerUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-                        // Hoặc trailerUrl = "https://www.youtube.com/watch?v=" + videoKey; -> Ko chơi trực tiếp với ExoPlayer
-                        playTrailerButton.setVisibility(View.VISIBLE);
-                        return;
-                    }
-                }
-
-                Log.d(TAG, "No suitable trailer found");
-                Toast.makeText(MovieDetailActivity.this, "No trailer available", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<MovieVideoResponse> call, Throwable t) {
-                Log.e(TAG, "Network error when checking for trailer", t);
-                Toast.makeText(MovieDetailActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MovieDetailActivity.this, "Lỗi mạng: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                playTrailerButton.setVisibility(View.GONE);
             }
         });
     }
 
-    private void showVideoPlayer() {
+    private void loadTrailer(String trailerUrl) {
+        String videoId = extractYouTubeVideoId(trailerUrl);
+        if (videoId != null) {
+            youtubePlayerView.setVisibility(View.VISIBLE);
+            youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(YouTubePlayer youTubePlayer) {
+                    youTubePlayer.loadVideo(videoId, 0);
+                }
+            });
+        }
+    }
+    private String extractYouTubeVideoId(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getQueryParameter("v"); // Trích videoId từ https://www.youtube.com/watch?v=Iru7Q2qmijQ
+    }
+    private void showYouTubePlayer() {
         movieBackdrop.setVisibility(View.GONE);
         playTrailerButton.setVisibility(View.GONE);
-        videoPlayerContainer.setVisibility(View.VISIBLE);
 
-        player.stop();
-        player.clearMediaItems();
+        // Bổ sung dòng này để hiện container
+        youtubeContainer.setVisibility(View.VISIBLE);
+        youtubePlayerView.setVisibility(View.VISIBLE);
 
-        MediaItem mediaItem = MediaItem.fromUri(trailerUrl);
-        player.setMediaItem(mediaItem);
-        player.prepare();
-        player.play();
+        getLifecycle().addObserver(youtubePlayerView);
+
+        youtubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                String videoId = extractVideoIdFromUrl(trailerUrl);
+                youTubePlayer.loadVideo(videoId, 0);
+            }
+        });
+    }
+
+
+    private String extractVideoIdFromUrl(String url) {
+        Uri uri = Uri.parse(url);
+        String videoId = uri.getQueryParameter("v");
+        if (videoId == null && url.contains("youtu.be/")) {
+            videoId = url.substring(url.lastIndexOf("/") + 1);
+        }
+        return videoId;
     }
 
     private void hideVideoPlayer() {

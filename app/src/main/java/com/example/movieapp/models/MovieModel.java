@@ -2,48 +2,76 @@ package com.example.movieapp.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class MovieModel implements Parcelable {
-
+    @SerializedName("name")
     private String title;
-    private String poster_path;
-    private String backdrop_path;
-    
-    @SerializedName("id")
-    private int movie_id;
-    
-    private String release_date;
-    private float vote_average;
 
-    @SerializedName("overview")
-    @Expose
-    private String movie_overview;
+    @SerializedName("poster_url")
+    private String posterPath;
 
-    public MovieModel() {
+    @SerializedName("thumb_url")
+    private String backdropPath;
 
-    }
+    @SerializedName("slug")
+    private String slug;
 
+    @SerializedName("content")
+    private String content;
 
-    // Setter
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    private int runtime;
+    @SerializedName("year")
+    private int year;
 
-    public MovieModel(Parcel in) {
+    @SerializedName("time")
+    private String runtimeText;
+
+    @SerializedName("episode_total")
+    private int episodeTotal;
+
+    @SerializedName("episode_current")
+    private String episodeCurrent;
+
+    @SerializedName("quality")
+    private String quality;
+
+    @SerializedName("lang")
+    private String language;
+
+    @SerializedName("actor")
+    private List<String> actors;
+
+    @SerializedName("director")
+    private List<String> directors;
+
+    @SerializedName("tmdb")
+    private Rating rating;
+
+    @SerializedName("view")
+    private int view;
+
+    protected MovieModel(Parcel in) {
         title = in.readString();
-        poster_path = in.readString();
-        backdrop_path = in.readString();
-        movie_id = in.readInt();
-        release_date = in.readString();
-        vote_average = in.readFloat();
-        movie_overview = in.readString();
-        runtime = in.readInt();
+        posterPath = in.readString();
+        backdropPath = in.readString();
+        slug = in.readString();
+        content = in.readString();
+        year = in.readInt();
+        runtimeText = in.readString();
+        episodeTotal = in.readInt();
+        episodeCurrent = in.readString();
+        quality = in.readString();
+        language = in.readString();
+        actors = in.createStringArrayList();
+        directors = in.createStringArrayList();
+        rating = in.readParcelable(Rating.class.getClassLoader());
+        view = in.readInt();
     }
 
     public static final Creator<MovieModel> CREATOR = new Creator<MovieModel>() {
@@ -58,45 +86,23 @@ public class MovieModel implements Parcelable {
         }
     };
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPoster_path() {
-        return poster_path;
-    }
-
-    public String getBackdrop_path() {
-        return backdrop_path;
-    }
-
-    public int getId() {
-        return movie_id;
-    }
-
-    public String getRelease_date() {
-        return release_date;
-    }
-
-    public float getVote_average() {
-        return vote_average;
-    }
-
-    public String getOverview() {
-        return movie_overview;
-    }
-
-    public int getRuntime() {
-        return runtime;
-    }
-
     @Override
-    public String toString() {
-        return "MovieModel{" +
-                "title='" + title + '\'' +
-                ", id=" + movie_id +
-                ", overview='" + movie_overview + '\'' +
-                '}';
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(posterPath);
+        dest.writeString(backdropPath);
+        dest.writeString(slug);
+        dest.writeString(content);
+        dest.writeInt(year);
+        dest.writeString(runtimeText);
+        dest.writeInt(episodeTotal);
+        dest.writeString(episodeCurrent);
+        dest.writeString(quality);
+        dest.writeString(language);
+        dest.writeStringList(actors);
+        dest.writeStringList(directors);
+        dest.writeParcelable(rating, flags);
+        dest.writeInt(view);
     }
 
     @Override
@@ -104,15 +110,148 @@ public class MovieModel implements Parcelable {
         return 0;
     }
 
+    // Getters and setters
+    public String getTitle() {
+        Log.e("title", this.title);
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPosterPath() {
+        Log.d("poster", this.posterPath);
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public String getRuntimeText() {
+        return runtimeText;
+    }
+
+    public void setRuntimeText(String runtimeText) {
+        this.runtimeText = runtimeText;
+    }
+
+    public int getEpisodeTotal() {
+        return episodeTotal;
+    }
+
+    public void setEpisodeTotal(int episodeTotal) {
+        this.episodeTotal = episodeTotal;
+    }
+
+    public String getEpisodeCurrent() {
+        return episodeCurrent;
+    }
+
+    public void setEpisodeCurrent(String episodeCurrent) {
+        this.episodeCurrent = episodeCurrent;
+    }
+
+    public String getQuality() {
+        return quality;
+    }
+
+    public void setQuality(String quality) {
+        this.quality = quality;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public List<String> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
+
+    public List<String> getDirectors() {
+        return directors;
+    }
+
+    public void setDirectors(List<String> directors) {
+        this.directors = directors;
+    }
+
+    public Rating getRatings() {
+        return rating;
+    }
+
+    public void setRatings(Rating rating) {
+        this.rating = rating;
+    }
+
+    public String getOverview() {
+        Log.e("overview", toString());
+        return content;
+    }
+
+    public void setOverview(String overview) {
+        this.content = overview;
+    }
+
+    public int getView() {
+        return view;
+    }
+
+    public void setView(int view) {
+        this.view = view;
+    }
+
+    @NonNull
     @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(poster_path);
-        dest.writeString(backdrop_path);
-        dest.writeInt(movie_id);
-        dest.writeString(release_date);
-        dest.writeFloat(vote_average);
-        dest.writeString(movie_overview);
-        dest.writeInt(runtime);
+    public String toString() {
+        return "MovieModel{" +
+                "title='" + title + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", backdropPath='" + backdropPath + '\'' +
+                ", slug='" + slug + '\'' +
+                ", year=" + year +
+                ", overview='" + content + '\'' +
+                ", runtimeText='" + runtimeText + '\'' +
+                ", episodeTotal=" + episodeTotal +
+                ", episodeCurrent='" + episodeCurrent + '\'' +
+                ", quality='" + quality + '\'' +
+                ", language='" + language + '\'' +
+                ", actors=" + actors +
+                ", directors=" + directors +
+                ", view=" + view +
+                '}';
     }
 }
