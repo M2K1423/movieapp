@@ -8,9 +8,10 @@
     android:background="@android:color/black">
 
     <!-- Top Bar -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:padding="12dp"
         android:background="#80000000">
 
@@ -20,18 +21,21 @@
             android:layout_height="36dp"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_revert"
-            android:tint="@android:color/white" />
+            android:tint="@android:color/white"
+            android:layout_gravity="start" />
 
         <TextView
             android:id="@+id/movie_title_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:text="Series Title"
             android:textColor="@android:color/white"
             android:textSize="18sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
 
     <!-- Video Player with Fullscreen Button -->
     <FrameLayout
@@ -59,32 +63,35 @@
     </FrameLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <Button
             android:id="@+id/btn_vietsub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
             android:text="Vietsub"
-            android:textSize="10sp"
+            android:background="@drawable/bg_btn_sub_selected"
             android:textColor="@android:color/white"
-            android:background="@drawable/bg_btn_sub"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginRight="6dp"/>
 
         <Button
             android:id="@+id/btn_dub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="6dp"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
             android:text="Lồng tiếng"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textColor="@android:color/white"
-            android:background="@drawable/bg_btn_sub" />
+            android:background="@drawable/bg_btn_sub_selected"
+            android:layout_marginLeft="6dp"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"

@@ -85,6 +85,14 @@ public class WatchMovieActivity extends AppCompatActivity {
 
         titleText.setText(movieData.getVideo().getName());
 
+        btn_vietsub.setSelected(true);
+        btn_dub.setSelected(false);
+
+        if (isVietsub == 0) {
+            btn_vietsub.setBackgroundResource(R.drawable.bg_btn_sub_selected);
+            btn_dub.setBackgroundResource(R.drawable.bg_btn_sub);
+        }
+
         // Default: Vietsub
         getEpisode(isVietsub);
 
@@ -119,6 +127,18 @@ public class WatchMovieActivity extends AppCompatActivity {
         long playbackPosition = exoPlayer.getCurrentPosition();
 
         getEpisode(flag);
+        btn_vietsub.setSelected(true);
+        btn_dub.setSelected(false);
+
+
+        // Update UI trạng thái nút được chọn
+        if (flag == 0) {
+            btn_vietsub.setBackgroundResource(R.drawable.bg_btn_sub_selected);
+            btn_dub.setBackgroundResource(R.drawable.bg_btn_sub);
+        } else {
+            btn_dub.setBackgroundResource(R.drawable.bg_btn_sub_selected);
+            btn_vietsub.setBackgroundResource(R.drawable.bg_btn_sub);
+        }
 
         if (allMovieUrls.isEmpty()) {
             Toast.makeText(this, "Không có dữ liệu video", Toast.LENGTH_SHORT).show();
@@ -134,6 +154,7 @@ public class WatchMovieActivity extends AppCompatActivity {
 
         setupEpisodeRecycler();
     }
+
 
     private void setupEpisodeRecycler() {
         EpisodeAdapter adapter = new EpisodeAdapter(allMovieUrls, movieUrl -> playEpisode(movieUrl, 0));
