@@ -46,9 +46,9 @@ public class MovieRecyclerAdaptor extends RecyclerView.Adapter<MovieViewHolder> 
 //        holder.release_data.setText(movieModel.getRelease_date());
 //
 //        holder.ratingBar.setRating((movieModel.getVote_average())/2);
-        Glide.with(holder.itemView.getContext())
-                .load(movieModel.getPosterPath())
-                .into(holder.movieImage);
+//        Glide.with(holder.itemView.getContext())
+//                .load(movieModel.getPosterPath())
+//                .into(holder.movieImage);
 
 
     }

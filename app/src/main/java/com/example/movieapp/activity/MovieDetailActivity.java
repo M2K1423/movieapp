@@ -1,5 +1,6 @@
 package com.example.movieapp.activity;
 
+import com.example.movieapp.models.Episode;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -69,11 +70,14 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
     private MovieVideo movieVideo;
     private String trailerUrl;
     private ExoPlayer player;
+    private List<Episode> episode;
 
     // Review views
     private RatingBar userRatingBar;
     private EditText commentInput;
     private Button submitReviewButton;
+    private MovieVideoResponse movieVideoResponse;
+    private Button watchNowBtn;
     private FrameLayout youtubeContainer;
 
     private RecyclerView reviewsRecyclerView;
@@ -116,6 +120,21 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         }
 
         setupClickListeners();
+        watchNowBtn = findViewById(R.id.watch_now_button);
+        watchNowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (movieVideoResponse == null || movieVideoResponse.getEpisodes() == null || movieVideoResponse.getEpisodes().isEmpty()) {
+                    Toast.makeText(MovieDetailActivity.this, "Không có tập phim nào để xem", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(MovieDetailActivity.this, WatchMovieActivity.class);
+                intent.putExtra("movie_data", movieVideoResponse); // Truyền toàn bộ MovieVideoResponse
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void initializeExistingViews() {
@@ -232,18 +251,21 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
 
         MovieApi movieApi = Servicey.getMovieApi();
         Call<MovieVideoResponse> responseCall = movieApi.getMovie(slug);
+        Log.e("movieVideo",responseCall+"");
 
         responseCall.enqueue(new Callback<MovieVideoResponse>() {
             @Override
             public void onResponse(Call<MovieVideoResponse> call, Response<MovieVideoResponse> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(MovieDetailActivity.this, "Không lấy được trailer", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MovieDetailActivity.this, "Không lấy được trailer", Toast.LENGTH_SHORT).show();
                     playTrailerButton.setVisibility(View.GONE);
                     return;
                 }
 
-                movieVideo = response.body().getVideo();
-
+                movieVideoResponse = response.body();
+                movieVideo = movieVideoResponse.getVideo();
+                episode = movieVideoResponse.getEpisodes();
+                Log.e("movieVideo",movieVideoResponse.getEpisodes()+"");
                 movieReleaseDate.setText("năm xuất bản " + movie.getYear());
                 movieOverview.setText(movieVideo.getContent());
 

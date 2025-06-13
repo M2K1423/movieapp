@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class MovieVideo implements Parcelable {
     @SerializedName("_id")
     @Expose
@@ -37,6 +39,7 @@ public class MovieVideo implements Parcelable {
     private String trailerUrl;
     @SerializedName("year")
     private int year;
+
 
     protected MovieVideo(Parcel in) {
         id = in.readString();
@@ -134,14 +137,19 @@ public class MovieVideo implements Parcelable {
         this.year = year;
     }
 
+
+
     @Override
     public String toString() {
         return "MovieVideo{" +
                 "id='" + id + '\'' +
-                ", slug='" + slug + '\'' +
                 ", name='" + name + '\'' +
+                ", slug='" + slug + '\'' +
+                ", content='" + content + '\'' +
                 ", site='" + site + '\'' +
                 ", type='" + type + '\'' +
+                ", trailerUrl='" + trailerUrl + '\'' +
+                ", year=" + year +
                 '}';
     }
 

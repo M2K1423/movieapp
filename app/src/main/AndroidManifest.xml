@@ -34,6 +34,7 @@
             android:name=".activity.LoginActivity"
             android:exported="true" />
 
+        <activity android:name=".activity.WatchMovieActivity" />
 
        <!-- MovieDetailActivity - Chỉ có thể gọi từ bên trong ứng dụng -->
         <activity
