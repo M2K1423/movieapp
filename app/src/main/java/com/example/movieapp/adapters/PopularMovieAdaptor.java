@@ -53,9 +53,8 @@ public class PopularMovieAdaptor extends RecyclerView.Adapter<PopularMovieAdapto
 
         // Load movie poster using Glide
 
-        String imageUrl = model.getPosterPath().replace("https", "http");
         Glide.with(context)
-                .load(imageUrl)
+                .load("http://phimimg.com/"+model.getPosterPath())
                 .into(holder.imageView);
 
         // Set click listener for movie details

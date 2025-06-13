@@ -121,8 +121,14 @@ public class MovieModel implements Parcelable {
     }
 
     public String getPosterPath() {
-        Log.d("poster", this.posterPath);
-        return posterPath;
+        String base = "https://phimimg.com/";
+        String result = posterPath;
+
+        if (posterPath.contains(base)) {
+            result = posterPath.substring(posterPath.indexOf(base) + base.length());
+        }
+
+        return result;
     }
 
     public void setPosterPath(String posterPath) {
@@ -130,7 +136,14 @@ public class MovieModel implements Parcelable {
     }
 
     public String getBackdropPath() {
-        return backdropPath;
+        String base = "https://phimimg.com/";
+        String result = backdropPath;
+
+        if (backdropPath.contains(base)) {
+            result = backdropPath.substring(backdropPath.indexOf(base) + base.length());
+        }
+
+        return result;
     }
 
     public void setBackdropPath(String backdropPath) {

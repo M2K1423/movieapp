@@ -125,7 +125,6 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
             @Override
             public void onClick(View v) {
                 if (movieVideoResponse == null || movieVideoResponse.getEpisodes() == null || movieVideoResponse.getEpisodes().isEmpty()) {
-                    Toast.makeText(MovieDetailActivity.this, "Không có tập phim nào để xem", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

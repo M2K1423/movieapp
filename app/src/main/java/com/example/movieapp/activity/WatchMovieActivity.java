@@ -1,5 +1,7 @@
 package com.example.movieapp.activity;
 
+import static android.view.View.GONE;
+
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +51,9 @@ public class WatchMovieActivity extends AppCompatActivity {
     private List<MovieUrl> allMovieUrls = new ArrayList<>();
     private Button btn_vietsub;
     private Button btn_dub;
+    private TextView titleText;
+    private EpisodeAdapter episodeAdapter;
+
 
     @OptIn(markerClass = UnstableApi.class)
     @Override
@@ -59,7 +64,7 @@ public class WatchMovieActivity extends AppCompatActivity {
         playerView = findViewById(R.id.player_view);
         episodeRecyclerView = findViewById(R.id.episode_recycler_view);
         ImageButton backButton = findViewById(R.id.back_button);
-        TextView titleText = findViewById(R.id.movie_title_text);
+        titleText = findViewById(R.id.movie_title_text);
         btn_vietsub = findViewById(R.id.btn_vietsub);
         btn_dub = findViewById(R.id.btn_dub);
 
@@ -83,7 +88,10 @@ public class WatchMovieActivity extends AppCompatActivity {
         exoPlayer.setVolume(1f);
         playerView.setPlayer(exoPlayer);
 
-        titleText.setText(movieData.getVideo().getName());
+
+        if(movieData.getEpisodes().size() < 2){
+            btn_dub.setVisibility(GONE);
+        }
 
         btn_vietsub.setSelected(true);
         btn_dub.setSelected(false);
@@ -102,7 +110,6 @@ public class WatchMovieActivity extends AppCompatActivity {
         }
 
         playEpisode(allMovieUrls.get(0), 0);
-        Log.e("WatchMovie", "Phát video: " + allMovieUrls.get(0).getLink_m3u8());
 
         setupEpisodeRecycler();
 
@@ -157,16 +164,27 @@ public class WatchMovieActivity extends AppCompatActivity {
 
 
     private void setupEpisodeRecycler() {
-        EpisodeAdapter adapter = new EpisodeAdapter(allMovieUrls, movieUrl -> playEpisode(movieUrl, 0));
+        episodeAdapter = new EpisodeAdapter(allMovieUrls, movieUrl -> {
+            int index = allMovieUrls.indexOf(movieUrl);
+            playEpisode(movieUrl, 0);
+            currentEpisodeIndex = index;
+            episodeAdapter.setSelectedIndex(index);
+        });
+
         episodeRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        episodeRecyclerView.setAdapter(adapter);
+        episodeRecyclerView.setAdapter(episodeAdapter);
+
+        // ✅ Thêm dòng này để set màu chọn đúng tập hiện tại
+        episodeAdapter.setSelectedIndex(currentEpisodeIndex);
     }
+
 
     private void playEpisode(MovieUrl movieUrl, long startPositionMs) {
         if (movieUrl == null || movieUrl.getLink_m3u8() == null) {
             Toast.makeText(this, "Không thể phát video", Toast.LENGTH_SHORT).show();
             return;
         }
+        titleText.setText(movieData.getVideo().getName() + " - " + movieUrl.getName());
 
         currentEpisodeIndex = allMovieUrls.indexOf(movieUrl);
 
@@ -193,7 +211,7 @@ public class WatchMovieActivity extends AppCompatActivity {
     }
 
 
-    private DefaultHttpDataSource.Factory createInsecureHttpDataSourceFactory() {
+    @OptIn(markerClass = UnstableApi.class) private DefaultHttpDataSource.Factory createInsecureHttpDataSourceFactory() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {

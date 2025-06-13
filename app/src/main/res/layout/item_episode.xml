@@ -15,9 +15,9 @@
         android:layout_height="wrap_content"
         android:text="Ep 1"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="6dp" />
+        android:textSize="15sp"
+        android:padding="4dp"
+      />
 
     <!-- Lựa chọn Vietsub / Lồng tiếng -->
 
