@@ -1,4 +1,4 @@
-//package com.example.movieapp.adaptors;
+package com.example.movieapp.adapters;//package com.example.movieapp.adaptors;
 //
 //import android.content.Context;
 //import android.view.LayoutInflater;
