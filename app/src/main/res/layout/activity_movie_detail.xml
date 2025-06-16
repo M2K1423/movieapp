@@ -29,13 +29,13 @@
         <!-- Movie backdrop and play button -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="134dp"
+            android:layout_height="220dp"
             android:visibility="visible">
 
             <ImageView
                 android:id="@+id/movie_backdrop"
                 android:layout_width="match_parent"
-                android:layout_height="134dp"
+                android:layout_height="220dp"
                 android:scaleType="centerCrop" />
 
             <ImageButton
@@ -66,21 +66,7 @@
                     android:layout_height="140dp"
                     android:scaleType="centerCrop"
                     android:contentDescription="Movie Poster" />
-
-                <Button
-                    android:id="@+id/watch_now_button"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Watch now"
-                    android:textColor="@android:color/white"
-                    android:backgroundTint="@android:color/holo_orange_light"
-                    android:textSize="12sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:layout_gravity="center_horizontal" />
             </LinearLayout>
-
             <!-- Movie text info -->
             <LinearLayout
                 android:layout_width="0dp"
@@ -124,8 +110,18 @@
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
-
-
+        <Button
+            android:id="@+id/watch_now_button"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="▶ Xem phim"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#3688D3"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp" />
         <!-- Review Section -->
         <LinearLayout
             android:layout_width="match_parent"

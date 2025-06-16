@@ -31,13 +31,15 @@
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/search_View"
                     android:layout_width="0dp"
+                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:layout_height="40dp"
-                    android:layout_margin="8dp"
-                    style="@style/CustomSearchView"
-                    android:theme="@style/CustomSearchView"
+                    android:background="@drawable/bg_searchview_rounded"
+                    android:queryHint="Tên phim, diễn viên, thể loại"
+                    android:iconifiedByDefault="false"
                     app:iconifiedByDefault="false"
-                    app:queryHint="Search movies..." />
+                    app:searchIcon="@drawable/ic_search"
+                    app:queryBackground="@android:color/transparent"
+                    app:submitBackground="@android:color/transparent" />
 
                 <ImageButton
                     android:id="@+id/btn_profile"
@@ -75,7 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="Newly Updated"
+                    android:text="Mới cập nhật"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -95,7 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="Cartoon"
+                    android:text="Hoạt hình"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -113,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:text="series"
+                    android:text="Phim bộ"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold" />

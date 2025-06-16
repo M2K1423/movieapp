@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.util.UnstableApi;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -171,7 +172,7 @@ public class WatchMovieActivity extends AppCompatActivity {
             episodeAdapter.setSelectedIndex(index);
         });
 
-        episodeRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        episodeRecyclerView.setLayoutManager(new GridLayoutManager(this, 4)); // 5 tập mỗi hàng
         episodeRecyclerView.setAdapter(episodeAdapter);
 
         // ✅ Thêm dòng này để set màu chọn đúng tập hiện tại
