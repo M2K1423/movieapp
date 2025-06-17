@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.movieapp.R;
 import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.Utils.MovieApi;
+import com.example.movieapp.adapters.BannerAdapter;
 import com.example.movieapp.adapters.MovieRecyclerAdaptor;
 import com.example.movieapp.adapters.OnMovieListener;
 import com.example.movieapp.adapters.PopularMovieAdaptor;
@@ -33,12 +34,18 @@ import com.example.movieapp.adapters.UpcomingMovieAdapter;
 import com.example.movieapp.adapters.TrendingMovieAdapter;
 import com.example.movieapp.adapters.TopRatedMovieAdapter;
 import com.example.movieapp.adapters.FavouritesMovieAdapter;
+import com.example.movieapp.models.BannerItem;
 import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.request.Servicey;
 import com.example.movieapp.response.MovieSearchResponse;
 import com.example.movieapp.response.MovieVideoResponse;
 import com.example.movieapp.response.SearchResponse;
 import com.example.movieapp.viewmodel.MovieListViewModel;
+
+import androidx.viewpager2.widget.ViewPager2;
+import android.os.Handler;
+import android.os.Looper;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,11 +68,39 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
     private MovieListViewModel viewModel;
     private LinearLayout mainScreenLL, recyclerLL;
     private TextView pickOfTheDay;
+    private ViewPager2 viewPagerSlider;
+    private Handler bannerHandler = new Handler(Looper.getMainLooper());
+    private Runnable bannerRunnable;
+    private int currentBannerPosition = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewPagerSlider = findViewById(R.id.viewpagerSlider);
+
+// Tạo danh sách ảnh banner
+        List<BannerItem> banners = new ArrayList<>();
+        banners.add(new BannerItem(R.drawable.wide));
+        banners.add(new BannerItem(R.drawable.wide1));
+//        banners.add(new BannerItem(R.drawable.wide3));
+
+// Gắn adapter
+        BannerAdapter bannerAdapter = new BannerAdapter(banners);
+        viewPagerSlider.setAdapter(bannerAdapter);
+
+// Tự động chuyển banner mỗi 3 giây
+        bannerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (bannerAdapter.getItemCount() == 0) return;
+                currentBannerPosition = (currentBannerPosition + 1) % bannerAdapter.getItemCount();
+                viewPagerSlider.setCurrentItem(currentBannerPosition, true);
+                bannerHandler.postDelayed(this, 3000);
+            }
+        };
+        bannerHandler.postDelayed(bannerRunnable, 3000);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -364,5 +399,10 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
 
         // Load upcoming movies
         viewModel.searchUpcomingMovies(1);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bannerHandler.removeCallbacks(bannerRunnable);
     }
 }

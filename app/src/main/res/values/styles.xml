@@ -16,7 +16,10 @@
         <!-- Background color -->
         <item name="android:windowBackground">@android:color/black</item>
     </style>
-
+    <style name="BannerImageRounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item> <!-- Bạn có thể tăng lên 24dp nếu muốn bo nhiều hơn -->
+    </style>
     <!-- Custom SearchView style -->
     <style name="CustomSearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:background">@drawable/search_background</item>

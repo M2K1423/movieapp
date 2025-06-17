@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/profile_background"
     android:padding="16dp">
 
     <LinearLayout
@@ -42,45 +42,97 @@
             android:textSize="16sp"
             android:gravity="center"
             android:layout_marginTop="4dp" />
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="center">
-        <Button
-            android:id="@+id/edit_profile_button"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Profile"
-            android:layout_marginTop="24dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
 
-        <!-- Nút chuyển sang Lịch sử -->
-        <Button
-            android:id="@+id/view_history_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="movie viewing history"
-            android:textAllCaps="true"
-            android:layout_marginTop="16dp" />
+            <!-- Nội dung lưới chiếm phần còn lại -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
 
-        <!-- Nút chuyển sang Yêu thích -->
-        <Button
-            android:id="@+id/view_favorites_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="favorite movie list"
-            android:textAllCaps="true"
-            android:layout_marginTop="12dp" />
+                <GridLayout
+                    android:id="@+id/profile_grid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="3"
+                    android:layout_marginTop="24dp"
+                    android:columnOrderPreserved="false"
+                    android:alignmentMode="alignMargins">
 
-        <!-- Nút Logout -->
-        <Button
-            android:id="@+id/logout_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Logout"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:textColor="@android:color/white" />
+                    <!-- Các nút như bạn đã có -->
+                    <Button
+                        android:id="@+id/edit_profile_button"
+                        android:layout_width="160dp"
+                        android:layout_height="80dp"
+                        android:text="Chỉnh sửa"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/rounded_button"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/view_history_button"
+                        android:layout_width="160dp"
+                        android:layout_height="80dp"
+                        android:text="Lịch sử xem"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/rounded_button"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/view_favorites_button"
+                        android:layout_width="160dp"
+                        android:layout_height="80dp"
+                        android:text="Phim yêu thích"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/rounded_button"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/download_button"
+                        android:layout_width="160dp"
+                        android:layout_height="80dp"
+                        android:text="Tải xuống"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/rounded_button"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/watched_button"
+                        android:layout_width="160dp"
+                        android:layout_height="80dp"
+                        android:text="Đã xem"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/rounded_button"
+                        android:textColor="@android:color/white" />
+
+                    <Button
+                        android:id="@+id/account_info_button"
+                        android:layout_width="160dp"
+                        android:layout_height="80dp"
+                        android:text="Tài khoản"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/rounded_button"
+                        android:textColor="@android:color/white" />
+
+                </GridLayout>
+            </LinearLayout>
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@android:color/white" />
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
