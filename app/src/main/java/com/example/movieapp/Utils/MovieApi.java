@@ -14,8 +14,8 @@ public interface MovieApi {
 
     @GET("/v1/api/tim-kiem")
     Call<MovieSearchResponse> searchMovies(
-            @Query("query") String query,
-            @Query("page") String page
+            @Query("keyword") String query,
+            @Query("limit") String page
     );
 
     @GET("/danh-sach/phim-moi-cap-nhat")

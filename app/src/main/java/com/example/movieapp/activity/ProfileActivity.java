@@ -1,6 +1,9 @@
 package com.example.movieapp.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -8,64 +11,52 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.movieapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import javax.annotation.Nullable;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    private ImageView profileImage;
-    private TextView profileName, profileEmail;
-    private Button editProfileButton, logoutButton;
-
-    private FirebaseAuth mAuth;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private ImageView profileImageView;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        profileImage = findViewById(R.id.profile_image);
-        profileName = findViewById(R.id.profile_name);
-        profileEmail = findViewById(R.id.profile_email);
-        editProfileButton = findViewById(R.id.edit_profile_button);
-        logoutButton = findViewById(R.id.logout_button);
+        profileImageView = findViewById(R.id.profile_image);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+        }
 
-        mAuth = FirebaseAuth.getInstance();
-
-        loadUserInfo();
-
-        editProfileButton.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng chỉnh sửa sẽ được phát triển sau.", Toast.LENGTH_SHORT).show();
-            // TODO: Mở màn hình chỉnh sửa profile
-        });
-
-        logoutButton.setOnClickListener(v -> {
-            mAuth.signOut();
-            Toast.makeText(this, "Đã đăng xuất.", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        });
+        // Mở thư viện khi click vào ảnh
+        profileImageView.setOnClickListener(v -> openImageChooser());
     }
 
-    private void loadUserInfo() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            profileName.setText(user.getDisplayName() != null ? user.getDisplayName() : "User");
-            profileEmail.setText(user.getEmail() != null ? user.getEmail() : "No Email");
+    private void openImageChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
 
-            if (user.getPhotoUrl() != null) {
-                Glide.with(this)
-                        .load(user.getPhotoUrl())
-                        .placeholder(R.drawable.ic_profile_placeholder)
-                        .into(profileImage);
-            } else {
-                profileImage.setImageResource(R.drawable.ic_profile_placeholder);
-            }
+    // Nhận kết quả ảnh được chọn
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            profileImageView.setImageURI(imageUri); // Gán ảnh vừa chọn vào ImageView
         }
     }
+
 }

@@ -63,10 +63,10 @@ public class TrendingMovieAdapter extends RecyclerView.Adapter<TrendingMovieAdap
         });
     }
     public String converCountRating(int countRating){
-        String res = "";
+        String res = "" + countRating;
         if(countRating > 1000){
             int thousandths =  countRating / 1000;
-            res += thousandths + "." + (countRating % 1000) / 100 + "k";
+            res = thousandths + "." + (countRating % 1000) / 100 + "k";
         }
         return res;
     }

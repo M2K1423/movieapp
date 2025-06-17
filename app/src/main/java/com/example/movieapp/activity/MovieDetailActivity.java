@@ -135,7 +135,33 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         });
 
     }
+    private void displayOverview(String overview){
+        movieOverview = findViewById(R.id.movie_overview);
+        TextView showMoreButton = findViewById(R.id.show_more_button);
+        final int MAX_LINES = 4;
 
+        movieOverview.setText(overview);
+
+        movieOverview.post(() -> {
+            if (movieOverview.getLineCount() > MAX_LINES) {
+                movieOverview.setMaxLines(MAX_LINES);
+                showMoreButton.setVisibility(View.VISIBLE);
+            } else {
+                showMoreButton.setVisibility(View.GONE);
+            }
+        });
+
+        showMoreButton.setOnClickListener(v -> {
+            if (movieOverview.getMaxLines() == Integer.MAX_VALUE) {
+                movieOverview.setMaxLines(MAX_LINES);
+                showMoreButton.setText("Show more");
+            } else {
+                movieOverview.setMaxLines(Integer.MAX_VALUE);
+                showMoreButton.setText("Show less");
+            }
+        });
+
+    }
     private void initializeExistingViews() {
         movieBackdrop = findViewById(R.id.movie_backdrop);
         movieTitle = findViewById(R.id.movie_title);
@@ -266,7 +292,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
                 episode = movieVideoResponse.getEpisodes();
                 Log.e("movieVideo",movieVideoResponse.getEpisodes()+"");
                 movieReleaseDate.setText("năm xuất bản " + movie.getYear());
-                movieOverview.setText(movieVideo.getContent());
+                displayOverview(movieVideo.getContent());
 
                 trailerUrl = response.body().getVideo().getTrailerUrl(); // cập nhật biến toàn cục
                 if (trailerUrl != null && trailerUrl.contains("youtube.com")) {

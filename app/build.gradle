@@ -65,6 +65,9 @@ dependencies {
     // Firebase Auth
     implementation 'com.google.firebase:firebase-auth:23.2.1'
 
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+
     // Google Sign-In
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
 

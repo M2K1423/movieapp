@@ -61,6 +61,8 @@ public class WatchMovieActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_movie);
 
+
+
         playerView = findViewById(R.id.player_view);
         episodeRecyclerView = findViewById(R.id.episode_recycler_view);
         ImageButton backButton = findViewById(R.id.back_button);
