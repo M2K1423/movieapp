@@ -48,7 +48,7 @@ public class SearchResultsActivity extends AppCompatActivity implements OnMovieL
 
         // Lấy query truyền từ MainActivity
         String query = getIntent().getStringExtra("query");
-        searchResultsTitle.setText("Search Results for: \"" + query + "\"");
+        searchResultsTitle.setText("Kết quả tìm kiếm cho : \"" + query + "\"");
 
         // Gọi API tìm kiếm phim với query
         searchMoviesFromApi(query);
