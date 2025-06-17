@@ -1,9 +1,11 @@
 package com.example.movieapp.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +21,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+
 import com.example.movieapp.R;
 import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.Utils.MovieApi;
@@ -33,6 +37,7 @@ import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.request.Servicey;
 import com.example.movieapp.response.MovieSearchResponse;
 import com.example.movieapp.response.MovieVideoResponse;
+import com.example.movieapp.response.SearchResponse;
 import com.example.movieapp.viewmodel.MovieListViewModel;
 
 import java.io.IOException;
@@ -91,21 +96,21 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
 
         // Setup search
         setupSearchView();
-        viewModel.getMovies().observe(this, movieModels -> {
-            Log.d("SEARCH_RESULT", "List nhận về: " + (movieModels == null ? "null" : movieModels.size()+" items"));
-            if (movieModels != null) {
-                for (MovieModel m : movieModels) {
-                }
-            }
-            adaptor.setModelList(movieModels);
-        });
+//        viewModel.getMovies().observe(this, movieModels -> {
+//            Log.d("SEARCH_RESULT", "List nhận về: " + (movieModels == null ? "null" : movieModels.size()+" items"));
+//            if (movieModels != null) {
+//                for (MovieModel m : movieModels) {
+//                }
+//            }
+//            adaptor.setModelList(movieModels);
+//        });
 
         // Observe data changes
         observeAnyChange();
-        viewModel.getMovies().observe(this, movieModels -> {
-            // Khi có dữ liệu search, cập nhật lên adaptor
-            adaptor.setModelList(movieModels);
-        });
+//        viewModel.getMovies().observe(this, movieModels -> {
+//            // Khi có dữ liệu search, cập nhật lên adaptor
+//            adaptor.setModelList(movieModels);
+//        });
         ImageButton profileBtn = findViewById(R.id.btn_profile);
         profileBtn.setOnClickListener(v -> {
             startActivity(new Intent(MainActivity.this, ProfileActivity.class));
@@ -153,24 +158,28 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         });
 
         // Observe search results
-        viewModel.getMovies().observe(this, new Observer<List<MovieModel>>() {
-            @Override
-            public void onChanged(List<MovieModel> movieModels) {
-                if (movieModels != null) {
-                    adaptor.setModelList(movieModels);
-                }
-            }
-        });
+//        viewModel.getMovies().observe(this, new Observer<List<MovieModel>>() {
+//            @Override
+//            public void onChanged(List<MovieModel> movieModels) {
+//                if (movieModels != null) {
+//                    adaptor.setModelList(movieModels);
+//                }
+//            }
+//        });
     }
 
     private void setupSearchView() {
         final SearchView searchView = findViewById(R.id.search_View);
+        EditText searchEditText = (EditText) searchView.findViewById(
+                androidx.appcompat.R.id.search_src_text);
+        searchEditText.setTextColor(Color.WHITE);         // Màu chữ nhập
+        searchEditText.setHintTextColor(Color.GRAY);      // Màu hint
 
         searchView.setOnSearchClickListener(v -> {
             mainScreenLL.setVisibility(View.GONE);
             recyclerLL.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
-            adaptor.setModelList(new ArrayList<>()); // clear dữ liệu cũ nếu cần
+//            adaptor.setModelList(new ArrayList<>()); // clear dữ liệu cũ nếu cần
         });
 
         searchView.setOnCloseListener(() -> {
@@ -231,39 +240,7 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
 //        });
     }
 
-    private void getRetrofitResponse() {
-        MovieApi movieApi = Servicey.getMovieApi();
 
-        Call<MovieSearchResponse> responseCall = movieApi.searchMovies(
-                "Action",
-                "1"
-        );
-
-        responseCall.enqueue(new Callback<MovieSearchResponse>() {
-            @Override
-            public void onResponse(Call<MovieSearchResponse> call, Response<MovieSearchResponse> response) {
-                if (response.code() == 200) {
-                    Toast.makeText(MainActivity.this, "Search Working", Toast.LENGTH_SHORT).show();
-                    Log.d("TAG", "onResponse: " + response.body());
-
-                    assert response.body() != null;
-                    List<MovieModel> movies = new ArrayList<>(response.body().getMovieModelList());
-
-                    for (MovieModel movie : movies) {
-                        Log.d("TAG", "onResponse: Movie " + movie.getTitle());
-                    }
-                } else {
-                    assert response.errorBody() != null;
-                    Toast.makeText(MainActivity.this, "It Failed " + response.errorBody(), Toast.LENGTH_SHORT).show();
-                    Log.d("TAG", response.errorBody().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieSearchResponse> call, Throwable t) {
-            }
-        });
-    }
 
     @Override
     public void onMovieClick(int position) {

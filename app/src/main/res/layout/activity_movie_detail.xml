@@ -99,7 +99,11 @@
                     android:layout_marginTop="8dp"
                     android:isIndicator="true"
                     android:numStars="5"
-                    android:progressTint="@android:color/holo_orange_light" />
+                    android:stepSize="0.5"
+                    android:progressTint="@android:color/holo_orange_light"
+                    android:secondaryProgressTint="@android:color/white"
+                    android:backgroundTint="@android:color/white" />
+
 
                 <TextView
                     android:id="@+id/movie_overview"

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -54,6 +55,9 @@ public class WatchMovieActivity extends AppCompatActivity {
     private Button btn_dub;
     private TextView titleText;
     private EpisodeAdapter episodeAdapter;
+    private boolean isExpanded = false; // trạng thái: true = hiện tất cả, false = chỉ 8 tập
+    private List<MovieUrl> displayedMovieUrls = new ArrayList<>(); // danh sách hiển thị trên UI
+
 
 
     @OptIn(markerClass = UnstableApi.class)
@@ -167,19 +171,41 @@ public class WatchMovieActivity extends AppCompatActivity {
 
 
     private void setupEpisodeRecycler() {
-        episodeAdapter = new EpisodeAdapter(allMovieUrls, movieUrl -> {
-            int index = allMovieUrls.indexOf(movieUrl);
+        TextView showMoreButton = findViewById(R.id.show_more_button);
+
+        displayedMovieUrls.clear();
+        if (!isExpanded && allMovieUrls.size() > 8) {
+            displayedMovieUrls.addAll(allMovieUrls.subList(0, 8));
+            showMoreButton.setText("Xem thêm");
+            showMoreButton.setVisibility(View.VISIBLE);
+        } else {
+            displayedMovieUrls.addAll(allMovieUrls);
+            if (allMovieUrls.size() > 8) {
+                showMoreButton.setText("Thu gọn");
+                showMoreButton.setVisibility(View.VISIBLE);
+            } else {
+                showMoreButton.setVisibility(View.GONE);
+            }
+        }
+
+        episodeAdapter = new EpisodeAdapter(displayedMovieUrls, movieUrl -> {
+            int index = allMovieUrls.indexOf(movieUrl); // tìm index trong danh sách đầy đủ
             playEpisode(movieUrl, 0);
             currentEpisodeIndex = index;
-            episodeAdapter.setSelectedIndex(index);
+            episodeAdapter.setSelectedIndex(displayedMovieUrls.indexOf(movieUrl)); // vị trí trong danh sách hiện tại
         });
 
-        episodeRecyclerView.setLayoutManager(new GridLayoutManager(this, 4)); // 5 tập mỗi hàng
+        episodeRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         episodeRecyclerView.setAdapter(episodeAdapter);
 
-        // ✅ Thêm dòng này để set màu chọn đúng tập hiện tại
-        episodeAdapter.setSelectedIndex(currentEpisodeIndex);
+        episodeAdapter.setSelectedIndex(displayedMovieUrls.indexOf(allMovieUrls.get(currentEpisodeIndex)));
+
+        showMoreButton.setOnClickListener(v -> {
+            isExpanded = !isExpanded;
+            setupEpisodeRecycler(); // cập nhật lại danh sách tập hiển thị
+        });
     }
+
 
 
     private void playEpisode(MovieUrl movieUrl, long startPositionMs) {

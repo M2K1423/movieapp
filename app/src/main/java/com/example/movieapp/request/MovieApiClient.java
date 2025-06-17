@@ -10,6 +10,8 @@ import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.response.MovieListResponse;
 import com.example.movieapp.response.MovieSearchResponse;
+import com.example.movieapp.response.SearchDataResponse;
+import com.example.movieapp.response.SearchResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -178,17 +180,17 @@ public class MovieApiClient {
         @Override
         public void run() {
             try {
-                Response<MovieSearchResponse> response = getMovies(query, pageNumber).execute();
+                Response<SearchResponse> response = getMovies(query, pageNumber).execute();
                 if (cancelRequest) return;
 
                 if (response.code() == 200 && response.body() != null) {
-                    List<MovieModel> list = new ArrayList<>(response.body().getMovieModelList());
+                    SearchDataResponse list =response.body().getData();
                     if (pageNumber == 1) {
-                        mMovies.postValue(list);
+//                        mMovies.postValue(list);
                     } else {
                         List<MovieModel> current = mMovies.getValue();
                         if (current != null) {
-                            current.addAll(list);
+//                            current.addAll(list);
                             mMovies.postValue(current);
                         }
                     }
@@ -203,7 +205,7 @@ public class MovieApiClient {
             }
         }
 
-        private Call<MovieSearchResponse> getMovies(String query, int pageNumber){
+        private Call<SearchResponse> getMovies(String query, int pageNumber){
             return Servicey.getMovieApi().searchMovies(
                     query,
                     String.valueOf(pageNumber)

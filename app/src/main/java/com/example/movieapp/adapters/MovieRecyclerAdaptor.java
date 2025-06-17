@@ -1,6 +1,7 @@
 package com.example.movieapp.adapters;
 
 import android.content.Context;
+import android.credentials.Credential;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.movieapp.R;
+import com.example.movieapp.Utils.AppCredentials;
+import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.models.MovieModel;
+import com.example.movieapp.response.SearchDataResponse;
 
 import java.util.List;
 
 public class MovieRecyclerAdaptor extends RecyclerView.Adapter<MovieViewHolder> {
 
     private OnMovieListener onMovieListener;
-    private List<MovieModel> modelList;
+    private SearchDataResponse modelList;
 
     private Context context;
 
@@ -39,16 +43,13 @@ public class MovieRecyclerAdaptor extends RecyclerView.Adapter<MovieViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
 
-        MovieModel movieModel= modelList.get(position);
+        MovieModel movieModel= modelList.getItems().get(position);
 
         holder.title.setText(movieModel.getTitle());
-//        holder.run_time.setText(String.valueOf(movieModel.getVote_average()).substring(0,3));
-//        holder.release_data.setText(movieModel.getRelease_date());
-//
-//        holder.ratingBar.setRating((movieModel.getVote_average())/2);
-//        Glide.with(holder.itemView.getContext())
-//                .load(movieModel.getPosterPath())
-//                .into(holder.movieImage);
+
+        Glide.with(holder.itemView.getContext())
+                .load(Credentials.IMAGE_URL+"/" +movieModel.getPosterPath())
+                .into(holder.movieImage);
 
 
     }
@@ -57,13 +58,13 @@ public class MovieRecyclerAdaptor extends RecyclerView.Adapter<MovieViewHolder> 
     public int getItemCount() {
 
         if(modelList!=null)
-            return modelList.size();
+            return modelList.getItems().size();
 
         return 0;
 
     }
 
-    public void setModelList(List<MovieModel> modelList) {
+    public void setModelList(SearchDataResponse modelList) {
         this.modelList = modelList;
         notifyDataSetChanged();
     }
@@ -72,8 +73,8 @@ public class MovieRecyclerAdaptor extends RecyclerView.Adapter<MovieViewHolder> 
     public MovieModel getSelectedMovie(int position){
 
         if( modelList != null ){
-            if( modelList.size() > 0 ){
-                return modelList.get(position);
+            if( modelList.getItems().size() > 0 ){
+                return modelList.getItems().get(position);
             }
         }
 

@@ -4,6 +4,7 @@ import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.response.MovieListResponse;
 import com.example.movieapp.response.MovieSearchResponse;
 import com.example.movieapp.response.MovieVideoResponse;
+import com.example.movieapp.response.SearchResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -13,7 +14,7 @@ import retrofit2.http.Query;
 public interface MovieApi {
 
     @GET("/v1/api/tim-kiem")
-    Call<MovieSearchResponse> searchMovies(
+    Call<SearchResponse> searchMovies(
             @Query("keyword") String query,
             @Query("limit") String page
     );

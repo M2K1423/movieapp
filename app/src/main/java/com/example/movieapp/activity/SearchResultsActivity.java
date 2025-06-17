@@ -2,6 +2,7 @@ package com.example.movieapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ import com.example.movieapp.adapters.OnMovieListener;
 import com.example.movieapp.models.MovieModel;
 import com.example.movieapp.request.Servicey;
 import com.example.movieapp.response.MovieSearchResponse;
+import com.example.movieapp.response.SearchDataResponse;
+import com.example.movieapp.response.SearchResponse;
 
 import java.util.List;
 
@@ -39,7 +42,7 @@ public class SearchResultsActivity extends AppCompatActivity implements OnMovieL
         searchResultsRecyclerView = findViewById(R.id.searchResultsRecyclerView);
         searchResultsTitle = findViewById(R.id.searchResultsTitle);
 
-        searchResultsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        searchResultsRecyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // Hiển thị 2 cột
         adaptor = new MovieRecyclerAdaptor(this);
         searchResultsRecyclerView.setAdapter(adaptor);
 
@@ -53,16 +56,17 @@ public class SearchResultsActivity extends AppCompatActivity implements OnMovieL
 
     private void searchMoviesFromApi(String query) {
         MovieApi movieApi = Servicey.getMovieApi();
-        Call<MovieSearchResponse> call = movieApi.searchMovies(
+        Call<SearchResponse> call = movieApi.searchMovies(
                 query,
-                "1" // page = 1
+                "10" // page = 1
         );
 
-        call.enqueue(new Callback<MovieSearchResponse>() {
+        call.enqueue(new Callback<SearchResponse>() {
             @Override
-            public void onResponse(Call<MovieSearchResponse> call, Response<MovieSearchResponse> response) {
+            public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<MovieModel> movies = response.body().getMovieModelList();
+                    SearchDataResponse movies = response.body().getData();
+                    Log.e("Search",movies+"");
                     adaptor.setModelList(movies);
                 } else {
                     Toast.makeText(SearchResultsActivity.this, "No results found", Toast.LENGTH_SHORT).show();
@@ -70,7 +74,7 @@ public class SearchResultsActivity extends AppCompatActivity implements OnMovieL
             }
 
             @Override
-            public void onFailure(Call<MovieSearchResponse> call, Throwable t) {
+            public void onFailure(Call<SearchResponse> call, Throwable t) {
                 Toast.makeText(SearchResultsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
