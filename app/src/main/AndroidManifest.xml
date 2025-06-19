@@ -32,6 +32,9 @@
             android:name=".activity.EditProfile"
             android:exported="false" />
         <activity
+            android:name=".activity.FavoriteActivity"
+            android:exported="false"/>
+        <activity
             android:name=".activity.LoginActivity"
             android:exported="true">
         </activity>

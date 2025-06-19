@@ -22,7 +22,6 @@ public interface UserApi {
     @POST("/api/verify/send-otp")
     @Headers("Content-Type: application/json")
     Call<Map<String, Object>> sendOtp(@Body Map<String, String> body);
-
     // Đăng nhập người dùng
     @POST("/api/users/login")
     @Headers("Content-Type: application/json")

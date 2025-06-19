@@ -31,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Button editProfileBtn;
 
     private Button logoutBtn;
+    private Button viewFavoritesButton;
 
 
     @Override
@@ -82,6 +83,13 @@ public class ProfileActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+        });
+        viewFavoritesButton = findViewById(R.id.view_favorites_button);
+
+        viewFavoritesButton.setOnClickListener(v -> {
+            // Chuyển qua màn hình yêu thích khi nhấn nút
+            Intent intent = new Intent(ProfileActivity.this, FavoriteActivity.class);
+            startActivity(intent);
         });
 
         // Cho chọn ảnh đại diện

@@ -9,7 +9,7 @@
         android:id="@+id/splash_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MvApp"
+        android:text="MOVFLIX"
         android:textColor="#E50914"
         android:textSize="48sp"
         android:textStyle="bold"

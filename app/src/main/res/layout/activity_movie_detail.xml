@@ -121,7 +121,28 @@
                     android:textSize="12sp"
                     android:layout_marginTop="4dp"
                     android:visibility="gone"/>
-
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_favorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Yêu thích"
+                    android:textSize="16sp"
+                    android:textColor="#FF6F00"
+                    android:fontFamily="sans-serif-medium"
+                    android:backgroundTint="@android:color/white"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    app:iconTint="#FF6F00"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_margin="8dp"
+                    android:elevation="4dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                />
             </LinearLayout>
         </LinearLayout>
         <Button
