@@ -20,6 +20,12 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item> <!-- Bạn có thể tăng lên 24dp nếu muốn bo nhiều hơn -->
     </style>
+    <style name="WhiteOutlinedInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">#FFFFFF</item> <!-- Viền trắng -->
+        <item name="boxBackgroundColor">#66000000</item> <!-- Nền đen mờ (40%) -->
+        <item name="android:textColorHint">#FFFFFF</item> <!-- Hint trắng -->
+        <item name="hintTextColor">#FFFFFF</item>
+    </style>
     <!-- Custom SearchView style -->
     <style name="CustomSearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:background">@drawable/search_background</item>
