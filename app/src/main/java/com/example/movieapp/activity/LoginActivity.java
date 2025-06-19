@@ -56,7 +56,12 @@ public class LoginActivity extends AppCompatActivity {
 
         // Buộc đăng xuất user khi mở login để không tự động đăng nhập
         mAuth.signOut();
-
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        if (prefs.contains("userId")) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+            return;
+        }
         // Sau khi signOut, getCurrentUser() chắc chắn null
         if (mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));

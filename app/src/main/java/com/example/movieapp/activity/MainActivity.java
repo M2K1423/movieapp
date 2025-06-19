@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements OnMovieListener {
         List<BannerItem> banners = new ArrayList<>();
         banners.add(new BannerItem(R.drawable.wide));
         banners.add(new BannerItem(R.drawable.wide1));
-//        banners.add(new BannerItem(R.drawable.wide3));
+        banners.add(new BannerItem(R.drawable.wide3));
 
 // Gắn adapter
         BannerAdapter bannerAdapter = new BannerAdapter(banners);
