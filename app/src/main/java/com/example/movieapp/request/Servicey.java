@@ -2,8 +2,10 @@ package com.example.movieapp.request;
 
 import android.util.Log;
 
+import com.example.movieapp.Utils.AppCredentials;
 import com.example.movieapp.Utils.Credentials;
 import com.example.movieapp.Utils.MovieApi;
+import com.example.movieapp.Utils.WatchedMovieApi;
 
 import java.io.IOException;
 
@@ -34,9 +36,11 @@ public class Servicey {
                     Response response = chain.proceed(request);
 
                     if (!response.isSuccessful()) {
+                        String responseBody = response.peekBody(Long.MAX_VALUE).string();
                         Log.e(TAG, "API Error - Code: " + response.code() +
                                 ", URL: " + request.url() +
-                                ", Response: " + response.body().string());
+                                ", Body: " + responseBody);
+
                     }
 
                     return response;
@@ -50,10 +54,21 @@ public class Servicey {
                     .client(getClient())
                     .addConverterFactory(GsonConverterFactory.create());
 
+    private static final Retrofit watchedRetrofit = new Retrofit.Builder()
+            .baseUrl(AppCredentials.BASE_URL)
+            .client(getClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
     private static Retrofit retrofit = retrofitBuilder.build();
 
     private static MovieApi movieApi = retrofit.create(MovieApi.class);
 
+    private static WatchedMovieApi watchedMovieApi = watchedRetrofit.create(WatchedMovieApi.class);
+
+
+    public static WatchedMovieApi getWatchedMovieApi() {
+        return watchedMovieApi;
+    }
     public static MovieApi getMovieApi() {
         System.out.println("moview api" + movieApi);
         return movieApi;

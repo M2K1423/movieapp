@@ -26,6 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private ImageView profileImageView;
     private Uri imageUri;
+    private Button viewHistoryBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,18 @@ public class ProfileActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
         }
 
+        viewHistoryBtn = findViewById(R.id.view_history_button);
+        viewHistoryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this,MovieWatchingActivity.class);
+            startActivity(intent);
+        });
+
+
         // Mở thư viện khi click vào ảnh
         profileImageView.setOnClickListener(v -> openImageChooser());
-    }
 
+
+    }
     private void openImageChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");

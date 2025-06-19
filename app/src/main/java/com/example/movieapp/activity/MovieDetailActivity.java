@@ -1,6 +1,8 @@
 package com.example.movieapp.activity;
 
 import com.example.movieapp.models.Episode;
+import com.example.movieapp.models.User;
+import com.example.movieapp.models.WatchedMovie;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
@@ -129,12 +132,52 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
                 }
 
                 Intent intent = new Intent(MovieDetailActivity.this, WatchMovieActivity.class);
+
+                saveWatchedMovie();
+
                 intent.putExtra("movie_data", movieVideoResponse); // Truyền toàn bộ MovieVideoResponse
                 startActivity(intent);
             }
         });
 
     }
+
+    private void saveWatchedMovie() {
+        Log.e("movie detail",movie+"");
+        WatchedMovie watchedMovie = new WatchedMovie();
+        watchedMovie.setTitle(movie.getTitle());
+        watchedMovie.setThumbnailUrl(movie.getBackdropPath());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        String currentTime = sdf.format(new Date());
+        watchedMovie.setWatchedAt(currentTime);
+        watchedMovie.setContent(movieVideo.getContent());
+
+        User user = new User();
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        long userId = prefs.getLong("userId", -1);
+        if(userId != -1){
+            user.setId(userId);
+        }
+        watchedMovie.setUser(user);
+
+        Servicey.getWatchedMovieApi().addWatchedMovie(watchedMovie).enqueue(new Callback<WatchedMovie>() {
+            @Override
+            public void onResponse(Call<WatchedMovie> call, Response<WatchedMovie> response) {
+                if (response.isSuccessful()) {
+                    Log.d("API", "Đã lưu phim đã xem thành công");
+                } else {
+                    Log.e("API", "Lỗi khi lưu: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WatchedMovie> call, Throwable t) {
+                Log.e("API", "Lỗi kết nối: " + t.getMessage());
+            }
+        });
+
+    }
+
     private void displayOverview(String overview){
         movieOverview = findViewById(R.id.movie_overview);
         TextView showMoreButton = findViewById(R.id.show_more_button);

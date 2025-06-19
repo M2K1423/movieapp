@@ -61,66 +61,44 @@
                     android:id="@+id/profile_grid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
+                    android:columnCount="1"
                     android:rowCount="3"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="12dp"
                     android:columnOrderPreserved="false"
                     android:alignmentMode="alignMargins">
 
                     <!-- Các nút như bạn đã có -->
                     <Button
                         android:id="@+id/edit_profile_button"
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
-                        android:text="Chỉnh sửa"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:text="Chỉnh sửa hồ sơ"
                         android:layout_margin="8dp"
                         android:background="@drawable/rounded_button"
                         android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/view_history_button"
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
-                        android:text="Lịch sử xem"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:text="Phim đã xem"
                         android:layout_margin="8dp"
                         android:background="@drawable/rounded_button"
                         android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/view_favorites_button"
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
                         android:text="Phim yêu thích"
                         android:layout_margin="8dp"
                         android:background="@drawable/rounded_button"
                         android:textColor="@android:color/white" />
 
-                    <Button
-                        android:id="@+id/download_button"
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
-                        android:text="Tải xuống"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
 
-                    <Button
-                        android:id="@+id/watched_button"
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
-                        android:text="Đã xem"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
 
-                    <Button
-                        android:id="@+id/account_info_button"
-                        android:layout_width="160dp"
-                        android:layout_height="80dp"
-                        android:text="Tài khoản"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/rounded_button"
-                        android:textColor="@android:color/white" />
+
+
 
                 </GridLayout>
             </LinearLayout>
@@ -130,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:text="Logout"
                 android:layout_marginBottom="20dp"
+                android:layout_marginTop="30dp"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:textColor="@android:color/white" />
 

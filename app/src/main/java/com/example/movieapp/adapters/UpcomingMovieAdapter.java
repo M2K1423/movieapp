@@ -57,6 +57,8 @@ public class UpcomingMovieAdapter extends RecyclerView.Adapter<UpcomingMovieAdap
     }
     public String converCountRating(int countRating){
         String res = "" + countRating;
+        if(res.equals("0"))
+            return "Chưa có";
         if(countRating > 1000){
             int thousandths =  countRating / 1000;
             res = thousandths + "." + (countRating % 1000) / 100 + "k";

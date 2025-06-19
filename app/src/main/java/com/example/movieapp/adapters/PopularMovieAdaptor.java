@@ -49,7 +49,7 @@ public class PopularMovieAdaptor extends RecyclerView.Adapter<PopularMovieAdapto
         int countRating = model.getRatings().getVote_count();
         String converRating = converCountRating(countRating);
 
-        holder.ratingCount.setText("("+converRating+" lượt đánh giá)");
+        holder.ratingCount.setText("("+converRating+" đánh giá)");
 
         // Load movie poster using Glide
 
@@ -66,6 +66,8 @@ public class PopularMovieAdaptor extends RecyclerView.Adapter<PopularMovieAdapto
     }
     public String converCountRating(int countRating){
         String res = "" + countRating;
+        if(res.equals("0"))
+            return "Chưa có";
         if(countRating > 1000){
             int thousandths =  countRating / 1000;
             res = thousandths + "." + (countRating % 1000) / 100 + "k";
