@@ -5,6 +5,8 @@ public class LoginResponse {
     private String message;
     private String error;
     private long userId;
+    private String username;
+    private String email;
 
 
     // Getters
@@ -15,4 +17,7 @@ public class LoginResponse {
     public long getUserId() {
         return userId;
     }
+    // getter
+    public String getUsername() { return username; }
+    public String getEmail() { return email; }
 }

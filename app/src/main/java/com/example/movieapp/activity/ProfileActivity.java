@@ -39,6 +39,17 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         profileImageView = findViewById(R.id.profile_image);
+        TextView profileName = findViewById(R.id.profile_name);
+        TextView profileEmail = findViewById(R.id.profile_email);
+
+        // ⬇️ Lấy thông tin người dùng và hiển thị
+        SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+        String name = prefs.getString("username", "Chưa có tên");
+        String email = prefs.getString("email", "Chưa có email");
+
+        profileName.setText(name);
+        profileEmail.setText(email);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
@@ -46,36 +57,35 @@ public class ProfileActivity extends AppCompatActivity {
 
         viewHistoryBtn = findViewById(R.id.view_history_button);
         viewHistoryBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this,MovieWatchingActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, MovieWatchingActivity.class);
             startActivity(intent);
         });
+
         editProfileBtn = findViewById(R.id.edit_profile_button);
         editProfileBtn.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, EditProfile.class);
             startActivity(intent);
         });
+
         logoutBtn = findViewById(R.id.logout_button);
         logoutBtn.setOnClickListener(v -> {
-            // Đăng xuất Firebase
+            // Đăng xuất Firebase (nếu có dùng)
             FirebaseAuth.getInstance().signOut();
 
-            // Xoá session lưu userId (nếu đăng nhập bằng tài khoản thường)
-            SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+            // Xóa session
             prefs.edit().clear().apply();
 
             Toast.makeText(ProfileActivity.this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
 
-            // Mở lại trang Login
+            // Quay lại trang đăng nhập
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         });
 
-        // Mở thư viện khi click vào ảnh
+        // Cho chọn ảnh đại diện
         profileImageView.setOnClickListener(v -> openImageChooser());
-
-
     }
     private void openImageChooser() {
         Intent intent = new Intent();

@@ -203,11 +203,16 @@ public class LoginActivity extends AppCompatActivity {
                     LoginResponse loginResponse = response.body();
 
                     if (loginResponse != null && loginResponse.isSuccess()) {
-                        long userId = loginResponse.getUserId();  // LẤY userId từ response
-
+                        long userId = loginResponse.getUserId();
+                        String username = loginResponse.getUsername();
+                        String email = loginResponse.getEmail();
                         // ✅ Lưu vào SharedPreferences
                         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-                        prefs.edit().putLong("userId", userId).apply();
+                        prefs.edit()
+                                .putLong("userId", userId)
+                                .putString("username", username)
+                                .putString("email", email)
+                                .apply();
                         Log.e("userId",userId+"");
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
