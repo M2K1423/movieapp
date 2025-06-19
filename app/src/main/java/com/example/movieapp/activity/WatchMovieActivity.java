@@ -56,6 +56,8 @@ public class WatchMovieActivity extends AppCompatActivity {
     private TextView titleText;
     private EpisodeAdapter episodeAdapter;
     private boolean isExpanded = false; // trạng thái: true = hiện tất cả, false = chỉ 8 tập
+    private long pauseTime = 0;
+
     private List<MovieUrl> displayedMovieUrls = new ArrayList<>(); // danh sách hiển thị trên UI
 
 
@@ -280,6 +282,8 @@ public class WatchMovieActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT > 23 && exoPlayer != null) {
             exoPlayer.release();
         }
+        pauseTime = System.currentTimeMillis(); // Đảm bảo lưu thời điểm nếu bị stop
+
     }
 
     @Override

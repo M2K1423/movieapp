@@ -151,6 +151,7 @@ public class MovieDetailActivity extends AppCompatActivity implements ReviewAdap
         String currentTime = sdf.format(new Date());
         watchedMovie.setWatchedAt(currentTime);
         watchedMovie.setContent(movieVideo.getContent());
+        watchedMovie.setSlug(movie.getSlug());
 
         User user = new User();
         SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);

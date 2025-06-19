@@ -2,15 +2,17 @@ package com.example.movieapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class WatchedMovie {
+public class WatchedMovie implements Serializable {
     private long id;
     private String title;
     private String thumbnailUrl;
 
     private String watchedAt;
     private String content;
+    private String slug;
 
     private User user;
 
@@ -63,6 +65,14 @@ public class WatchedMovie {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     @Override

@@ -24,11 +24,18 @@ public class WatchedMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int TYPE_HEADER = WatchedItem.TYPE_HEADER;
     private static final int TYPE_MOVIE = WatchedItem.TYPE_MOVIE;
 
-    private Context context;
+    private final Context context;
+    private final OnMovieListener onMovieListener;
     private List<WatchedItem> items = new ArrayList<>();
 
-    public WatchedMovieAdapter(Context context) {
+    // Interface callback để xử lý khi click vào movie
+    public interface OnMovieListener {
+        void onMovieClick(WatchedMovie movie);
+    }
+
+    public WatchedMovieAdapter(Context context, OnMovieListener onMovieListener) {
         this.context = context;
+        this.onMovieListener = onMovieListener;
     }
 
     public void setItems(List<WatchedItem> newItems) {
@@ -49,11 +56,12 @@ public class WatchedMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
         if (viewType == TYPE_HEADER) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_date_header, parent, false);
+            View view = inflater.inflate(R.layout.item_date_header, parent, false);
             return new HeaderViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_watch_video, parent, false);
+            View view = inflater.inflate(R.layout.item_watch_video, parent, false);
             return new MovieViewHolder(view);
         }
     }
@@ -61,21 +69,30 @@ public class WatchedMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         WatchedItem item = items.get(position);
+
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).textHeader.setText(item.getHeaderTitle());
         } else if (holder instanceof MovieViewHolder) {
             WatchedMovie movie = item.getMovie();
+            MovieViewHolder movieHolder = (MovieViewHolder) holder;
 
-            ((MovieViewHolder) holder).textTitle.setText(movie.getTitle());
-            ((MovieViewHolder) holder).textContent.setText(movie.getContent());
+            movieHolder.textTitle.setText(movie.getTitle());
+            movieHolder.textContent.setText(movie.getContent());
 
             Glide.with(context)
-                    .load(Credentials.IMAGE_URL + "/" +movie.getThumbnailUrl())
+                    .load(Credentials.IMAGE_URL + "/" + movie.getThumbnailUrl())
                     .placeholder(R.drawable.movie_placeholder)
-                    .into(((MovieViewHolder) holder).imagePoster);
+                    .into(movieHolder.imagePoster);
+
+            holder.itemView.setOnClickListener(v -> {
+                if (onMovieListener != null) {
+                    onMovieListener.onMovieClick(movie);
+                }
+            });
         }
     }
 
+    // ViewHolder cho header (ngày)
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
         TextView textHeader;
 
@@ -85,6 +102,7 @@ public class WatchedMovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
+    // ViewHolder cho movie
     static class MovieViewHolder extends RecyclerView.ViewHolder {
         ImageView imagePoster;
         TextView textTitle, textContent;
