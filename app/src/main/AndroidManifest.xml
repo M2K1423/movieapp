@@ -20,10 +20,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.EditProfile"
-            android:exported="false" />
-        <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,15 +28,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.EditProfile"
+            android:exported="false" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:exported="true">
+        </activity>
         <activity android:name=".activity.MovieWatchingActivity" />
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity android:name=".activity.WatchMovieActivity" /> <!-- MovieDetailActivity - Chỉ có thể gọi từ bên trong ứng dụng -->
         <activity
             android:name=".activity.MovieDetailActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activity.SearchResultsActivity"
             android:exported="false" />
